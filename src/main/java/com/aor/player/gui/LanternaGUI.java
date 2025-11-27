@@ -21,6 +21,12 @@ import java.net.URISyntaxException;
 import java.net.URL;
 
 public class LanternaGUI implements GUI{
+    private final Screen screen;
+
+    public LanternaGUI(Screen screen) {
+        this.screen = screen;
+    }
+
     @Override
     public ACTION getNextAction() throws IOException {
 
