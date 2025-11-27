@@ -1,5 +1,4 @@
 package com.aor.player.states;
-import com.aor.player.Game;
 import com.aor.player.controller.Controller;
 import com.aor.player.gui.GUI;
 import com.aor.player.viewer.Viewer;
