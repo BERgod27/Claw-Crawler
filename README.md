@@ -37,7 +37,7 @@ The main goal is to separate responsibilities:
 
 ![UML Diagram](./docs/General_UML.png)
 
-##### Mockup 
+#### Mockup 
 
 - **Mockup 1:** Run test mockup  
 ![Mockup 1](./docs/mockup1.png)
