@@ -39,6 +39,15 @@ The main goal is to separate responsibilities:
 
 ##### Mockup 
 
+- **Mockup 1:** Run test mockup  
+![Mockup 1](./docs/mockup1.png)
+
+- **Mockup 2:** Thinking / write-hand mockup 
+![Mockup 2](./docs/mockup2.png)
+
+- **Mockup 2:** Thinking / write-hand mockup
+![Mockup 3](./docs/mockup3.png)
+
 ##### Game and state layer
 
 Game is the central class that holds the current game state and delegates operations to the active state object.
