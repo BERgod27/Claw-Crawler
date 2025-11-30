@@ -37,6 +37,8 @@ The main goal is to separate responsibilities:
 
 ![UML Diagram](./docs/General_UML.png)
 
+##### Mockup 
+
 ##### Game and state layer
 
 Game is the central class that holds the current game state and delegates operations to the active state object.
