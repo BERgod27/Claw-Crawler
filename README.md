@@ -28,7 +28,7 @@ This project was developed by Bernardo Barbosa (up202403438@edu.fe.up.pt), João
 
 #### Current general UML explanation
 
-The game has different states (such as a game state and a menu state), each with its own controller and viewer. The model layer consists of elements such as the arena, menu, player, monsters, walls, and positions.
+The game has different states (such as a game state and a menu state), each with its own controller and viewer. The model layer consists of elements such as the dungeon, menu, player, monsters, walls, and positions.
 The main goal is to separate responsibilities:
 - State: decides which controller and viewer are active.
 - Controller: handles input and updates the model.
@@ -49,7 +49,7 @@ State<T> is an abstract, generic state representing a specific phase of the game
 
 GameState and MenuState are concrete states that extend State.
 GameState uses:
-- An Arena as its model.
+- A Dungeon as its model.
 - A GameController. 
 - A GameViewer.
 MenuState uses:
@@ -66,7 +66,7 @@ MenuState uses:
 ##### Viewer Layer
 Viewer<T> is an abstract viewer responsible for drawing a specific type of model whose subclasses must implement how their model is displayed.
 
-GameViewer: draws the entire game arena and its elements.
+GameViewer: draws the entire game dungeon and its elements.
 
 MenuViewer: draws the menu.
 
@@ -83,9 +83,9 @@ PlayerAction: Describes the actions available to the player (for example, moveme
 
 ##### Model Layer
 
-- DungeonLevel is a higher-level structure that may include multiple arenas or levels.
-- Arena represents the active game area and contains the player, walls, monsters, and other elements.
+- DungeonLevel is a higher-level structure that may include multiple areas or levels.
+- Dungeon represents the active game area and contains the player, walls, monsters, and other elements.
 - Menu represents the menu model.
-- Element is the base class for anything located in the arena.
+- Element is the base class for anything located in the dungeon.
 - Player, Wall, and Monster are concrete elements and monster references MonsterType, which defines its attributes and behavior.
-- Position holds x and y coordinates for placing elements within the arena.
+- Position holds x and y coordinates for placing elements within the dungeon.
