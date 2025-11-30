@@ -45,7 +45,7 @@ The main goal is to separate responsibilities:
 - **Mockup 2:** Thinking / write-hand mockup 
 ![Mockup 2](./docs/mockup2.png)
 
-- **Mockup 2:** Thinking / write-hand mockup
+- **Mockup 3:** Thinking / write-hand mockup
 ![Mockup 3](./docs/mockup3.png)
 
 ##### Game and state layer
