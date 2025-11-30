@@ -4,13 +4,14 @@ public class Player extends Element {
     private int Speed;
     private int Armor;
     private int Health;
+    private int energy;
 
-
-    public Player(int x, int y){
-        super(x,y);
+    public Player(int x, int y) {
+        super(x, y);
         this.Speed = 10;
         this.Armor = 10;
         this.Health = 10;
+        this.energy = 100;
     }
 
     public int getArmor() {
@@ -23,6 +24,14 @@ public class Player extends Element {
 
     public int getSpeed() {
         return Speed;
+    }
+
+    public int getEnergy() {
+        return energy;
+    }
+
+    public void decreaseEnergy() {
+        this.energy--;
     }
 
 }

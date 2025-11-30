@@ -2,24 +2,24 @@ package com.aor.player.viewer.game;
 
 import com.aor.player.gui.GUI;
 import com.aor.player.model.Position;
-import com.aor.player.model.game.arena.Arena;
+import com.aor.player.model.game.dungeon.Dungeon;
 import com.aor.player.model.game.elements.Element;
 import com.aor.player.viewer.Viewer;
 
 import java.util.List;
 
-public class GameViewer extends Viewer<Arena> {
-    public GameViewer(Arena arena) {
-        super(arena);
+public class GameViewer extends Viewer<Dungeon> {
+    public GameViewer(Dungeon dungeon) {
+        super(dungeon);
     }
 
     @Override
     public void drawElements(GUI gui) {
         drawElements(gui, getModel().getWalls(), new WallViewer());
         drawElements(gui, getModel().getMonsters(), new MonsterViewer());
-        drawElement(gui, getModel().getHero(), new HeroViewer());
+        drawElement(gui, getModel().getPlayer(), new PlayerViewer());
 
-        gui.drawText(new Position(0, 0), "Energy: " + getModel().getHero().getEnergy(), "#FFD700");
+        gui.drawText(new Position(0, 0), "Energy: " + getModel().getPlayer().getEnergy(), "#FFD700");
     }
 
     private <T extends Element> void drawElements(GUI gui, List<T> elements, ElementViewer<T> viewer) {
