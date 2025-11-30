@@ -17,9 +17,9 @@ public class GameViewer extends Viewer<Arena> {
     public void drawElements(GUI gui) {
         drawElements(gui, getModel().getWalls(), new WallViewer());
         drawElements(gui, getModel().getMonsters(), new MonsterViewer());
-        drawElement(gui, getModel().getHero(), new HeroViewer());
+        drawElement(gui, getModel().getPlayer(), new PlayerViewer());
 
-        gui.drawText(new Position(0, 0), "Energy: " + getModel().getHero().getEnergy(), "#FFD700");
+        gui.drawText(new Position(0, 0), "Energy: " + getModel().getPlayer().getEnergy(), "#FFD700");
     }
 
     private <T extends Element> void drawElements(GUI gui, List<T> elements, ElementViewer<T> viewer) {
