@@ -46,8 +46,6 @@ public class DungeonController extends Controller<Dungeon> {
     private void movePlayer(Position position) {
         if (getModel().isEmpty(position)) {
             getModel().getPlayer().setPosition(position);
-            if (getModel().isMonster(position))
-                getModel().getPlayer().decreaseEnergy();
         }
     }
 }

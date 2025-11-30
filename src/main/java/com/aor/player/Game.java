@@ -2,23 +2,26 @@ package com.aor.player;
 
 import com.aor.player.gui.GUI;
 import com.aor.player.gui.LanternaGUI;
+import com.aor.player.model.menu.Menu;
+import com.aor.player.states.MenuState;
 import com.aor.player.states.State;
 
 import java.io.IOException;
 
 public class Game {
-    private final GUI gui;
-    private State<?> state;
+    private final LanternaGUI gui;
+    private State state;
 
     public Game() throws IOException {
-        this.gui = new LanternaGUI(20, 20);
+        this.gui = new LanternaGUI(20, 25);
+        this.state = new MenuState(new Menu());
     }
 
     public static void main(String[] args) throws IOException {
         new Game().start();
     }
 
-    public void setState(State<?> state) {
+    public void setState(State state) {
         this.state = state;
     }
 

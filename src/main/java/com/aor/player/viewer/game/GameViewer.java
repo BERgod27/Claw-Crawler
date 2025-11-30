@@ -19,7 +19,10 @@ public class GameViewer extends Viewer<Dungeon> {
         drawElements(gui, getModel().getMonsters(), new MonsterViewer());
         drawElement(gui, getModel().getPlayer(), new PlayerViewer());
 
-        gui.drawText(new Position(0, 0), "Energy: " + getModel().getPlayer().getEnergy(), "#FFD700");
+        // Display player stats at the bottom (below the dungeon walls at y=19)
+        gui.drawText(new Position(1, 21), "Health: " + getModel().getPlayer().getHealth(), "#FF0000");
+        gui.drawText(new Position(1, 22), "Armor: " + getModel().getPlayer().getArmor(), "#00FFFF");
+        gui.drawText(new Position(1, 23), "Speed: " + getModel().getPlayer().getSpeed(), "#00FF00");
     }
 
     private <T extends Element> void drawElements(GUI gui, List<T> elements, ElementViewer<T> viewer) {

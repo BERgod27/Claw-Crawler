@@ -27,14 +27,6 @@ public class Menu {
         return entries.get(i);
     }
 
-    public int getNumberEntries() {
-        return this.entries.size();
-    }
-
-    public int getCurrentEntry() {
-        return currentEntry;
-    }
-
     public boolean isSelected(int i) {
         return currentEntry == i;
     }
@@ -45,5 +37,9 @@ public class Menu {
 
     public boolean isSelectedStart() {
         return isSelected(0);
+    }
+
+    public int getNumberEntries() {
+        return this.entries.size();
     }
 }

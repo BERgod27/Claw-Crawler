@@ -78,36 +78,44 @@ public class LanternaGUI implements GUI {
 
     @Override
     public void drawPlayer(Position position) {
-
+        TextGraphics graphics = screen.newTextGraphics();
+        graphics.setForegroundColor(TextColor.Factory.fromString("#FFD700"));
+        graphics.putString(position.getX(), position.getY(), "P");
     }
 
     @Override
     public void drawWall(Position position) {
-
+        TextGraphics graphics = screen.newTextGraphics();
+        graphics.setForegroundColor(TextColor.Factory.fromString("#FFFFFF"));
+        graphics.putString(position.getX(), position.getY(), "#");
     }
 
     @Override
     public void drawMonster(Position position) {
-
+        TextGraphics graphics = screen.newTextGraphics();
+        graphics.setForegroundColor(TextColor.Factory.fromString("#FF0000"));
+        graphics.putString(position.getX(), position.getY(), "M");
     }
 
     @Override
     public void drawText(Position position, String text, String color) {
-
+        TextGraphics graphics = screen.newTextGraphics();
+        graphics.setForegroundColor(TextColor.Factory.fromString(color));
+        graphics.putString(position.getX(), position.getY(), text);
     }
 
     @Override
     public void clear() {
-
+        screen.clear();
     }
 
     @Override
     public void refresh() throws IOException {
-
+        screen.refresh();
     }
 
     @Override
     public void close() throws IOException {
-
+        screen.close();
     }
 }
