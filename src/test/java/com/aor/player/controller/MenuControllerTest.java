@@ -59,14 +59,15 @@ class MenuControllerTest {
 
         controller.step(game, GUI.ACTION.DOWN, 100);
 
-        // Should move to "Exit" (index 1)
-        assertTrue(menu.isSelectedExit());
+        // Should move to "Instructions" (index 1)
+        assertTrue(menu.isSelectedInstructions());
     }
 
     @Test
     void testStepWithSelectOnExit() throws IOException {
-        // Move to Exit option
-        menu.nextEntry();
+        // Move to Exit option (index 2)
+        menu.nextEntry(); // Move to Instructions
+        menu.nextEntry(); // Move to Exit
         assertTrue(menu.isSelectedExit());
 
         controller.step(game, GUI.ACTION.SELECT, 100);
@@ -109,6 +110,10 @@ class MenuControllerTest {
         // Start at "Start"
         assertTrue(menu.isSelectedStart());
 
+        // Go down to "Instructions"
+        controller.step(game, GUI.ACTION.DOWN, 100);
+        assertTrue(menu.isSelectedInstructions());
+
         // Go down to "Exit"
         controller.step(game, GUI.ACTION.DOWN, 100);
         assertTrue(menu.isSelectedExit());
@@ -121,7 +126,11 @@ class MenuControllerTest {
         controller.step(game, GUI.ACTION.UP, 100);
         assertTrue(menu.isSelectedExit());
 
-        // Go up again, should go to "Start"
+        // Go up to "Instructions"
+        controller.step(game, GUI.ACTION.UP, 100);
+        assertTrue(menu.isSelectedInstructions());
+
+        // Go up to "Start"
         controller.step(game, GUI.ACTION.UP, 100);
         assertTrue(menu.isSelectedStart());
     }
