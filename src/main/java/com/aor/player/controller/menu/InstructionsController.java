@@ -1,9 +1,9 @@
-package com.aor.player.controller.instructions;
+package com.aor.player.controller.menu;
 
 import com.aor.player.Game;
 import com.aor.player.controller.Controller;
 import com.aor.player.gui.GUI;
-import com.aor.player.model.instructions.Instructions;
+import com.aor.player.model.menu.Instructions;
 import com.aor.player.model.menu.Menu;
 import com.aor.player.states.MenuState;
 

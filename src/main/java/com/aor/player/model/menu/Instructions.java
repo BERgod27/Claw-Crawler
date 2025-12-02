@@ -1,4 +1,4 @@
-package com.aor.player.model.instructions;
+package com.aor.player.model.menu;
 
 public class Instructions {
     private final String title;

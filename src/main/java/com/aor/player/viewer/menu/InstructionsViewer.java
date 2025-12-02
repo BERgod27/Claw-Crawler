@@ -1,8 +1,8 @@
-package com.aor.player.viewer.instructions;
+package com.aor.player.viewer.menu;
 
 import com.aor.player.gui.GUI;
 import com.aor.player.model.Position;
-import com.aor.player.model.instructions.Instructions;
+import com.aor.player.model.menu.Instructions;
 import com.aor.player.viewer.Viewer;
 
 public class InstructionsViewer extends Viewer<Instructions> {

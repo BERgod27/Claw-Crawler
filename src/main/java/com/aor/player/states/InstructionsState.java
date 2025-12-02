@@ -1,10 +1,10 @@
 package com.aor.player.states;
 
 import com.aor.player.controller.Controller;
-import com.aor.player.controller.instructions.InstructionsController;
-import com.aor.player.model.instructions.Instructions;
+import com.aor.player.controller.menu.InstructionsController;
+import com.aor.player.model.menu.Instructions;
 import com.aor.player.viewer.Viewer;
-import com.aor.player.viewer.instructions.InstructionsViewer;
+import com.aor.player.viewer.menu.InstructionsViewer;
 
 public class InstructionsState extends State<Instructions> {
     private final InstructionsViewer viewer;
