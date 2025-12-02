@@ -81,19 +81,22 @@ public class LanternaGUI implements GUI {
         TextGraphics graphics = screen.newTextGraphics();
         graphics.setForegroundColor(TextColor.Factory.fromString("#FFD700"));
         graphics.putString(position.getX(), position.getY(), "P");
+        graphics.setBackgroundColor(TextColor.Factory.fromString("#1a1a2e"));
     }
 
     @Override
     public void drawWall(Position position) {
         TextGraphics graphics = screen.newTextGraphics();
-        graphics.setForegroundColor(TextColor.Factory.fromString("#FFFFFF"));
-        graphics.putString(position.getX(), position.getY(), "#");
+        graphics.setForegroundColor(TextColor.Factory.fromString("#8B8B8B"));
+        graphics.setBackgroundColor(TextColor.Factory.fromString("#2d2d2d"));
+        graphics.putString(position.getX(), position.getY(), "█");
     }
 
     @Override
     public void drawMonster(Position position) {
         TextGraphics graphics = screen.newTextGraphics();
-        graphics.setForegroundColor(TextColor.Factory.fromString("#FF0000"));
+        graphics.setForegroundColor(TextColor.Factory.fromString("#FF4444"));
+        graphics.setBackgroundColor(TextColor.Factory.fromString("#4a0000"));
         graphics.putString(position.getX(), position.getY(), "M");
     }
 

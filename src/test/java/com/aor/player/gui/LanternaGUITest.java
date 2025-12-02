@@ -31,6 +31,7 @@ class LanternaGUITest {
 
         Mockito.verify(tg, Mockito.times(1)).setForegroundColor(new TextColor.RGB(255, 215, 0));
         Mockito.verify(tg, Mockito.times(1)).putString(1, 1, "P");
+        Mockito.verify(tg, Mockito.times(1)).setBackgroundColor(new TextColor.RGB(26, 26, 46));
     }
 
     @Test
@@ -45,15 +46,17 @@ class LanternaGUITest {
     void drawWall() {
         gui.drawWall(new Position(1, 1));
 
-        Mockito.verify(tg, Mockito.times(1)).setForegroundColor(new TextColor.RGB(255, 255, 255));
-        Mockito.verify(tg, Mockito.times(1)).putString(1, 1, "#");
+        Mockito.verify(tg, Mockito.times(1)).setForegroundColor(new TextColor.RGB(139, 139, 139));
+        Mockito.verify(tg, Mockito.times(1)).setBackgroundColor(new TextColor.RGB(45, 45, 45));
+        Mockito.verify(tg, Mockito.times(1)).putString(1, 1, "█");
     }
 
     @Test
     void drawMonster() {
         gui.drawMonster(new Position(1, 1));
 
-        Mockito.verify(tg, Mockito.times(1)).setForegroundColor(new TextColor.RGB(255, 0, 0));
+        Mockito.verify(tg, Mockito.times(1)).setForegroundColor(new TextColor.RGB(255, 68, 68));
+        Mockito.verify(tg, Mockito.times(1)).setBackgroundColor(new TextColor.RGB(74, 0, 0));
         Mockito.verify(tg, Mockito.times(1)).putString(1, 1, "M");
     }
 

@@ -13,7 +13,7 @@ public class Game {
     private State state;
 
     public Game() throws IOException {
-        this.gui = new LanternaGUI(20, 25);
+        this.gui = new LanternaGUI(120, 100);
         this.state = new MenuState(new Menu());
     }
 
@@ -26,7 +26,7 @@ public class Game {
     }
 
     private void start() throws IOException {
-        int FPS = 10;
+        int FPS = 60;
         int frameTime = 1000 / FPS;
 
         while (this.state != null) {

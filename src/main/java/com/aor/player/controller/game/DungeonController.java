@@ -44,8 +44,6 @@ public class DungeonController extends Controller<Dungeon> {
     }
 
     private void movePlayer(Position position) {
-        if (getModel().isEmpty(position)) {
-            getModel().getPlayer().setPosition(position);
-        }
+        getModel().movePlayer(position);
     }
 }

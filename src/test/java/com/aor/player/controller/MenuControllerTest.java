@@ -3,6 +3,7 @@ package com.aor.player.controller;
 import com.aor.player.Game;
 import com.aor.player.controller.menu.MenuController;
 import com.aor.player.gui.GUI;
+import com.aor.player.model.game.dungeon.DungeonFactory;
 import com.aor.player.model.menu.Menu;
 import com.aor.player.states.GameState;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,11 +20,13 @@ class MenuControllerTest {
     private MenuController controller;
     private Menu menu;
     private Game game;
+    private DungeonFactory dungeonFactory;
 
     @BeforeEach
     void setUp() {
         menu = new Menu();
-        controller = new MenuController(menu);
+        dungeonFactory = new DungeonFactory();
+        controller = new MenuController(menu, dungeonFactory);
         game = Mockito.mock(Game.class);
     }
 
@@ -145,8 +148,11 @@ class MenuControllerTest {
 
         GameState gameState = stateCaptor.getValue();
         assertNotNull(gameState.getModel().getPlayer());
-        assertEquals(10, gameState.getModel().getPlayer().getPosition().getX());
-        assertEquals(10, gameState.getModel().getPlayer().getPosition().getY());
+        // Player should be within dungeon bounds
+        assertTrue(gameState.getModel().getPlayer().getPosition().getX() >= 0);
+        assertTrue(gameState.getModel().getPlayer().getPosition().getX() < 20);
+        assertTrue(gameState.getModel().getPlayer().getPosition().getY() >= 0);
+        assertTrue(gameState.getModel().getPlayer().getPosition().getY() < 20);
     }
 
     @Test
@@ -158,9 +164,8 @@ class MenuControllerTest {
 
         GameState gameState = stateCaptor.getValue();
         assertNotNull(gameState.getModel().getWalls());
-        // Should have walls around perimeter: 20 top + 20 bottom + 18 left + 18 right =
-        // 76
-        assertEquals(76, gameState.getModel().getWalls().size());
+        // Should have walls (rooms are randomly generated, so exact count varies)
+        assertTrue(gameState.getModel().getWalls().size() > 0);
     }
 
     @Test

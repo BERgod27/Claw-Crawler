@@ -1,27 +1,31 @@
 package com.aor.player.model.game.elements;
 
 public class Player extends Element {
-    private int Speed;
-    private int Armor;
-    private int Health;
+    private static final int DEFAULT_SPEED = 10;
+    private static final int DEFAULT_ARMOR = 10;
+    private static final int DEFAULT_HEALTH = 10;
+
+    private int speed;
+    private int armor;
+    private int health;
 
     public Player(int x, int y) {
         super(x, y);
-        this.Speed = 10;
-        this.Armor = 10;
-        this.Health = 10;
+        this.speed = DEFAULT_SPEED;
+        this.armor = DEFAULT_ARMOR;
+        this.health = DEFAULT_HEALTH;
     }
 
     public int getArmor() {
-        return Armor;
+        return armor;
     }
 
     public int getHealth() {
-        return Health;
+        return health;
     }
 
     public int getSpeed() {
-        return Speed;
+        return speed;
     }
 
 }
