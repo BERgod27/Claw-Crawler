@@ -78,6 +78,9 @@ public class LanternaGUI implements GUI {
         if (keyStroke.getKeyType() == KeyType.Enter)
             return ACTION.SELECT;
 
+        if (keyStroke.getKeyType() == KeyType.Character && keyStroke.getCharacter() == 'i')
+            return ACTION.INVENTORY;
+
         return ACTION.NONE;
     }
 
@@ -168,5 +171,10 @@ public class LanternaGUI implements GUI {
     @Override
     public void close() throws IOException {
         screen.close();
-    }
-}
+    }}
+
+    
+    
+            
+            
+    

@@ -27,6 +27,10 @@ public class DungeonController extends Controller<Dungeon> {
             // Open shop menu
             game.setState(new com.aor.player.states.ShopState(new com.aor.player.model.game.shop.Shop(), getModel()));
         }
+        if (action == GUI.ACTION.INVENTORY) {
+            // Open inventory
+            game.setState(new com.aor.player.states.InventoryState(getModel()));
+        }
         if (action == GUI.ACTION.QUIT)
             game.setState(null);
     }
@@ -85,4 +89,7 @@ public class DungeonController extends Controller<Dungeon> {
             }
         }
     }
+
 }
+
+    
