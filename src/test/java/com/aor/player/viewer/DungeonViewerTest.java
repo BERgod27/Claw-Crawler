@@ -41,8 +41,10 @@ public class DungeonViewerTest {
         // Verify monsters are drawn
         Mockito.verify(gui, Mockito.times(1)).drawMonster(new Position(4, 5));
 
-        // Verify player is drawn
-        Mockito.verify(gui, Mockito.times(1)).drawPlayer(new Position(5, 8));
+        // Verify player is drawn with sprite
+        Mockito.verify(gui, Mockito.times(1)).drawSprite(
+                Mockito.eq(new Position(5, 8)),
+                Mockito.any());
 
         // Verify stats are drawn
         Mockito.verify(gui, Mockito.times(1)).drawText(new Position(1, 21), "Health: 10", "#FF0000");

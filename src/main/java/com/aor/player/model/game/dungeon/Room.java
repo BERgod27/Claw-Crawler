@@ -1,49 +1,95 @@
 package com.aor.player.model.game.dungeon;
 
 import com.aor.player.model.Position;
+import com.aor.player.model.game.elements.Door;
+import com.aor.player.model.game.elements.Monster;
+import com.aor.player.model.game.elements.ShopKeeper;
+import com.aor.player.model.game.elements.Wall;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class Room {
-    private final int x;
-    private final int y;
-    private final int width;
-    private final int height;
+    private final String id;
+    private List<Wall> walls;
+    private List<Monster> monsters;
+    private List<Door> doors;
+    private ShopKeeper shopKeeper;
 
-    public Room(int x, int y, int width, int height) {
-        this.x = x;
-        this.y = y;
-        this.width = width;
-        this.height = height;
+    public Room(String id) {
+        this.id = id;
+        this.walls = new ArrayList<>();
+        this.monsters = new ArrayList<>();
+        this.doors = new ArrayList<>();
     }
 
-    public int getX() {
-        return x;
+    public String getId() {
+        return id;
     }
 
-    public int getY() {
-        return y;
+    public List<Wall> getWalls() {
+        return Collections.unmodifiableList(walls);
     }
 
-    public int getWidth() {
-        return width;
+    public void setWalls(List<Wall> walls) {
+        this.walls = new ArrayList<>(walls);
     }
 
-    public int getHeight() {
-        return height;
+    public void addWall(Wall wall) {
+        this.walls.add(wall);
     }
 
-    public Position getCenter() {
-        return new Position(x + width / 2, y + height / 2);
+    public List<Monster> getMonsters() {
+        return Collections.unmodifiableList(monsters);
     }
 
-    public boolean overlaps(Room other) {
-        return x < other.x + other.width &&
-                x + width > other.x &&
-                y < other.y + other.height &&
-                y + height > other.y;
+    public void setMonsters(List<Monster> monsters) {
+        this.monsters = new ArrayList<>(monsters);
     }
 
-    public boolean contains(Position position) {
-        return position.getX() >= x && position.getX() < x + width &&
-                position.getY() >= y && position.getY() < y + height;
+    public void addMonster(Monster monster) {
+        this.monsters.add(monster);
+    }
+
+    public void removeMonster(Monster monster) {
+        this.monsters.remove(monster);
+    }
+
+    public List<Door> getDoors() {
+        return Collections.unmodifiableList(doors);
+    }
+
+    public void setDoors(List<Door> doors) {
+        this.doors = new ArrayList<>(doors);
+    }
+
+    public void addDoor(Door door) {
+        this.doors.add(door);
+    }
+
+    public boolean isEmpty(Position position) {
+        for (Wall wall : walls) {
+            if (wall.getPosition().equals(position))
+                return false;
+        }
+        // Doors are passable - don't block movement
+        return true;
+    }
+
+    public Door getDoorAt(Position position) {
+        for (Door door : doors) {
+            if (door.getPosition().equals(position))
+                return door;
+        }
+        return null;
+    }
+
+    public ShopKeeper getShopKeeper() {
+        return shopKeeper;
+    }
+
+    public void setShopKeeper(ShopKeeper shopKeeper) {
+        this.shopKeeper = shopKeeper;
     }
 }

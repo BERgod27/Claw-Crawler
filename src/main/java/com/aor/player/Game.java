@@ -1,6 +1,5 @@
 package com.aor.player;
 
-import com.aor.player.gui.GUI;
 import com.aor.player.gui.LanternaGUI;
 import com.aor.player.model.menu.Menu;
 import com.aor.player.states.MenuState;
@@ -13,7 +12,7 @@ public class Game {
     private State state;
 
     public Game() throws IOException {
-        this.gui = new LanternaGUI(120, 100);
+        this.gui = new LanternaGUI(77, 38);
         this.state = new MenuState(new Menu());
     }
 

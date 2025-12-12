@@ -12,12 +12,8 @@ import com.googlecode.lanterna.terminal.DefaultTerminalFactory;
 import com.googlecode.lanterna.terminal.Terminal;
 import com.googlecode.lanterna.terminal.swing.AWTTerminalFontConfiguration;
 
-import javax.swing.*;
 import java.awt.*;
-import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
 
 public class LanternaGUI implements GUI {
     private final Screen screen;
@@ -43,8 +39,17 @@ public class LanternaGUI implements GUI {
 
     private Terminal createTerminal(int width, int height) throws IOException {
         TerminalSize terminalSize = new TerminalSize(width, height);
+
+        // Configure font for proper window sizing
+        AWTTerminalFontConfiguration fontConfig = AWTTerminalFontConfiguration.newInstance(
+                new Font("Monospaced", Font.PLAIN, 12));
+
         DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory()
-                .setInitialTerminalSize(terminalSize);
+                .setInitialTerminalSize(terminalSize)
+                .setTerminalEmulatorTitle("Dungeon Crawler")
+                .setTerminalEmulatorFontConfiguration(fontConfig)
+                .setForceTextTerminal(false);
+
         Terminal terminal = terminalFactory.createTerminal();
         return terminal;
     }
@@ -105,6 +110,49 @@ public class LanternaGUI implements GUI {
         TextGraphics graphics = screen.newTextGraphics();
         graphics.setForegroundColor(TextColor.Factory.fromString(color));
         graphics.putString(position.getX(), position.getY(), text);
+    }
+
+    @Override
+    public void drawSprite(Position position, com.aor.player.model.Sprite sprite) {
+        TextGraphics graphics = screen.newTextGraphics();
+
+        for (int y = 0; y < sprite.getHeight(); y++) {
+            for (int x = 0; x < sprite.getWidth(); x++) {
+                Color color = sprite.getPixel(x, y);
+
+                // Skip transparent pixels
+                if (color != null && color.getAlpha() > 128) {
+                    // Convert AWT Color to Lanterna TextColor
+                    String hexColor = String.format("#%02x%02x%02x",
+                            color.getRed(), color.getGreen(), color.getBlue());
+                    graphics.setForegroundColor(TextColor.Factory.fromString(hexColor));
+                    graphics.putString(position.getX() + x, position.getY() + y, "█");
+                }
+            }
+        }
+    }
+
+    @Override
+    public void drawDoor(Position position) {
+        TextGraphics graphics = screen.newTextGraphics();
+        graphics.setForegroundColor(TextColor.Factory.fromString("#00FF00")); // Green for doors
+        graphics.setBackgroundColor(TextColor.Factory.fromString("#003300"));
+        graphics.putString(position.getX(), position.getY(), "▓");
+    }
+
+    @Override
+    public void drawShopKeeper(Position position) {
+        TextGraphics graphics = screen.newTextGraphics();
+        graphics.setForegroundColor(TextColor.Factory.fromString("#FFD700")); // Gold for shopkeeper
+        graphics.setBackgroundColor(TextColor.Factory.fromString("#4a3800"));
+        graphics.putString(position.getX(), position.getY(), "S");
+    }
+
+    @Override
+    public void drawText(int x, int y, String text, String color) {
+        TextGraphics graphics = screen.newTextGraphics();
+        graphics.setForegroundColor(TextColor.Factory.fromString(color));
+        graphics.putString(x, y, text);
     }
 
     @Override

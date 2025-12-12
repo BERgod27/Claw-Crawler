@@ -1,6 +1,9 @@
 package com.aor.player.model.game.dungeon;
 
+import com.aor.player.model.Position;
+import com.aor.player.model.game.elements.Door;
 import com.aor.player.model.game.elements.Player;
+import com.aor.player.model.game.elements.ShopKeeper;
 import com.aor.player.model.game.elements.Wall;
 
 import java.util.ArrayList;
@@ -8,51 +11,108 @@ import java.util.List;
 import java.util.Random;
 
 public class DungeonFactory {
-    private static final int DUNGEON_WIDTH = 20;
-    private static final int DUNGEON_HEIGHT = 20;
-    private static final int MIN_ROOMS = 5;
-    private static final int ROOM_VARIANCE = 4;
-    private static final int MIN_ROOM_SIZE = 3;
-    private static final int MAX_ROOM_SIZE = 6;
-    private static final int DEFAULT_PLAYER_X = 10;
-    private static final int DEFAULT_PLAYER_Y = 10;
+    private static final int DUNGEON_WIDTH = 77;
+    private static final int DUNGEON_HEIGHT = 35;
 
-    private final Random random;
+    // Door dimensions - should match or accommodate player sprite size
+    private static final int DOOR_WIDTH = 1; // Horizontal span
+    private static final int DOOR_HEIGHT = 10; // Vertical span (matches player sprite height)
 
     public DungeonFactory() {
-        this.random = new Random();
     }
 
     public DungeonFactory(Random random) {
-        this.random = random;
+        // Constructor kept for compatibility with tests
     }
 
     public Dungeon createDungeon() {
         Dungeon dungeon = new Dungeon(DUNGEON_WIDTH, DUNGEON_HEIGHT);
 
-        // Generate rooms
-        RoomGenerator generator = new RoomGenerator(DUNGEON_WIDTH, DUNGEON_HEIGHT);
-        int numRooms = MIN_ROOMS + random.nextInt(ROOM_VARIANCE);
-        List<Room> rooms = generator.generateRooms(numRooms, MIN_ROOM_SIZE, MAX_ROOM_SIZE);
+        // Create three rooms
+        Room mainRoom = createRoom("main");
+        Room eastRoom = createRoom("east");
+        Room westRoom = createRoom("west");
 
-        // Create walls and carve out rooms
-        List<Wall> walls = generator.createWallsFromRooms(rooms);
+        // Add shopkeeper to main room (top-right corner)
+        mainRoom.setShopKeeper(new ShopKeeper(DUNGEON_WIDTH - 10, 5));
 
-        // Connect rooms with corridors
-        generator.createCorridors(rooms, walls);
+        // Calculate door position (centered vertically)
+        int doorCenterY = DUNGEON_HEIGHT / 2;
+        int doorStartY = doorCenterY - (DOOR_HEIGHT / 2);
 
-        dungeon.setWalls(walls);
+        // Add doorways to connect rooms
+        // Main room: right door to east, left door to west
+        createDoorway(mainRoom, DUNGEON_WIDTH - 1, doorStartY, "east",
+                new Position(2, doorStartY));
+        createDoorway(mainRoom, 0, doorStartY, "west",
+                new Position(DUNGEON_WIDTH - 9, doorStartY));
 
-        // Place player in the center of the first room
-        if (!rooms.isEmpty()) {
-            dungeon.setPlayer(new Player(rooms.get(0).getCenter().getX(), rooms.get(0).getCenter().getY()));
-        } else {
-            dungeon.setPlayer(new Player(DEFAULT_PLAYER_X, DEFAULT_PLAYER_Y));
-        }
+        // East room: left door back to main
+        createDoorway(eastRoom, 0, doorStartY, "main",
+                new Position(DUNGEON_WIDTH - 9, doorStartY));
 
-        // Initialize empty list for monsters
-        dungeon.setMonsters(new ArrayList<>());
+        // West room: right door back to main
+        createDoorway(westRoom, DUNGEON_WIDTH - 1, doorStartY, "main",
+                new Position(2, doorStartY));
+
+        // Add rooms to dungeon
+        dungeon.addRoom(mainRoom);
+        dungeon.addRoom(eastRoom);
+        dungeon.addRoom(westRoom);
+
+        // Set starting room
+        dungeon.setCurrentRoomId("main");
+
+        // Place player in the center of the main room
+        int centerX = DUNGEON_WIDTH / 2;
+        int centerY = DUNGEON_HEIGHT / 2;
+        dungeon.setPlayer(new Player(centerX, centerY));
 
         return dungeon;
+    }
+
+    /**
+     * Creates a doorway (multiple door elements) at the specified position
+     * 
+     * @param room          The room to add the doorway to
+     * @param x             X position of the doorway
+     * @param startY        Starting Y position of the doorway
+     * @param targetRoomId  ID of the room this doorway leads to
+     * @param spawnPosition Where the player spawns in the target room
+     */
+    private void createDoorway(Room room, int x, int startY, String targetRoomId, Position spawnPosition) {
+        for (int i = 0; i < DOOR_HEIGHT; i++) {
+            room.addDoor(new Door(x, startY + i, targetRoomId, spawnPosition));
+        }
+    }
+
+    /**
+     * Creates a horizontal doorway (for top/bottom walls)
+     */
+    private void createHorizontalDoorway(Room room, int startX, int y, String targetRoomId, Position spawnPosition) {
+        for (int i = 0; i < DOOR_HEIGHT; i++) {
+            room.addDoor(new Door(startX + i, y, targetRoomId, spawnPosition));
+        }
+    }
+
+    private Room createRoom(String id) {
+        Room room = new Room(id);
+        List<Wall> walls = new ArrayList<>();
+
+        // Create boundary walls for the room
+        // Top and bottom walls
+        for (int x = 0; x < DUNGEON_WIDTH; x++) {
+            walls.add(new Wall(x, 0)); // Top wall
+            walls.add(new Wall(x, DUNGEON_HEIGHT - 1)); // Bottom wall
+        }
+
+        // Left and right walls
+        for (int y = 1; y < DUNGEON_HEIGHT - 1; y++) {
+            walls.add(new Wall(0, y)); // Left wall
+            walls.add(new Wall(DUNGEON_WIDTH - 1, y)); // Right wall
+        }
+
+        room.setWalls(walls);
+        return room;
     }
 }

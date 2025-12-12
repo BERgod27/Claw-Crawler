@@ -17,12 +17,22 @@ public class GameViewer extends Viewer<Dungeon> {
     public void drawElements(GUI gui) {
         drawElements(gui, getModel().getWalls(), new WallViewer());
         drawElements(gui, getModel().getMonsters(), new MonsterViewer());
+        drawElements(gui, getModel().getDoors(), new DoorViewer());
+
+        // Draw shopkeeper if present in current room
+        if (getModel().getCurrentRoom() != null && getModel().getCurrentRoom().getShopKeeper() != null) {
+            new ShopKeeperViewer().draw(getModel().getCurrentRoom().getShopKeeper(), gui);
+        }
+
         drawElement(gui, getModel().getPlayer(), new PlayerViewer());
 
-        // Display player stats at the bottom (below the dungeon walls at y=19)
-        gui.drawText(new Position(1, 21), "Health: " + getModel().getPlayer().getHealth(), "#FF0000");
-        gui.drawText(new Position(1, 22), "Armor: " + getModel().getPlayer().getArmor(), "#00FFFF");
-        gui.drawText(new Position(1, 23), "Speed: " + getModel().getPlayer().getSpeed(), "#00FF00");
+        // Display player stats horizontally at row 36 (below bottom boundary wall at
+        // row 35)
+        String stats = String.format("HP: %d | Armor: %d | Speed: %d",
+                getModel().getPlayer().getHealth(),
+                getModel().getPlayer().getArmor(),
+                getModel().getPlayer().getSpeed());
+        gui.drawText(new Position(2, 36), stats, "#FFD700");
     }
 
     private <T extends Element> void drawElements(GUI gui, List<T> elements, ElementViewer<T> viewer) {

@@ -23,6 +23,9 @@ public class PlayerViewerTest {
     @Test
     void drawElement() {
         viewer.draw(player, gui);
-        Mockito.verify(gui, Mockito.times(1)).drawPlayer(new Position(10, 10));
+        // Verify that drawSprite is called (sprite loading happens in static block)
+        Mockito.verify(gui, Mockito.times(1)).drawSprite(
+                Mockito.eq(new Position(10, 10)),
+                Mockito.any());
     }
 }

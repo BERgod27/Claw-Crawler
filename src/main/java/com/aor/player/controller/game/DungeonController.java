@@ -23,6 +23,10 @@ public class DungeonController extends Controller<Dungeon> {
             movePlayerDown();
         if (action == GUI.ACTION.LEFT)
             movePlayerLeft();
+        if (action == GUI.ACTION.SELECT && isPlayerNearShopKeeper()) {
+            // Open shop menu
+            game.setState(new com.aor.player.states.ShopState(new com.aor.player.model.game.shop.Shop(), getModel()));
+        }
         if (action == GUI.ACTION.QUIT)
             game.setState(null);
     }
@@ -45,5 +49,40 @@ public class DungeonController extends Controller<Dungeon> {
 
     private void movePlayer(Position position) {
         getModel().movePlayer(position);
+
+        // Check if player is on a door after moving
+        checkDoorTransition();
+
+        // Check if player is near shopkeeper
+        checkShopKeeperCollision();
+    }
+
+    private void checkShopKeeperCollision() {
+        if (getModel().isPlayerNearShopKeeper()) {
+            // Player touched shopkeeper - open shop menu
+            // Note: We need access to Game to change state
+            // This will be handled in the step method
+        }
+    }
+
+    public boolean isPlayerNearShopKeeper() {
+        return getModel().isPlayerNearShopKeeper();
+    }
+
+    private void checkDoorTransition() {
+        Position playerPos = getModel().getPlayer().getPosition();
+
+        // Check all cells that the player sprite occupies (7x7)
+        for (int dy = 0; dy < getModel().getPlayer().getSpriteHeight(); dy++) {
+            for (int dx = 0; dx < getModel().getPlayer().getSpriteWidth(); dx++) {
+                Position checkPos = new Position(playerPos.getX() + dx, playerPos.getY() + dy);
+                var door = getModel().getDoorAt(checkPos);
+                if (door != null) {
+                    // Transition to the target room
+                    getModel().changeRoom(door.getTargetRoomId(), door.getSpawnPosition());
+                    return; // Exit after first door found
+                }
+            }
+        }
     }
 }

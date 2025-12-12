@@ -17,8 +17,8 @@ public class RoomGenerator {
         this.random = new Random();
     }
 
-    public List<Room> generateRooms(int numRooms, int minSize, int maxSize) {
-        List<Room> rooms = new ArrayList<>();
+    public List<RoomArea> generateRooms(int numRooms, int minSize, int maxSize) {
+        List<RoomArea> rooms = new ArrayList<>();
         int attempts = 0;
         int maxAttempts = numRooms * 10;
 
@@ -30,10 +30,10 @@ public class RoomGenerator {
             int x = random.nextInt(dungeonWidth - width - 1) + 1;
             int y = random.nextInt(dungeonHeight - height - 1) + 1;
 
-            Room newRoom = new Room(x, y, width, height);
+            RoomArea newRoom = new RoomArea(x, y, width, height);
 
             boolean overlaps = false;
-            for (Room existingRoom : rooms) {
+            for (RoomArea existingRoom : rooms) {
                 if (newRoom.overlaps(existingRoom)) {
                     overlaps = true;
                     break;
@@ -48,7 +48,7 @@ public class RoomGenerator {
         return rooms;
     }
 
-    public List<Wall> createWallsFromRooms(List<Room> rooms) {
+    public List<Wall> createWallsFromRooms(List<RoomArea> rooms) {
         List<Wall> walls = new ArrayList<>();
 
         // Add dungeon perimeter walls
@@ -70,7 +70,7 @@ public class RoomGenerator {
 
         // Carve out rooms (remove walls inside rooms)
         walls.removeIf(wall -> {
-            for (Room room : rooms) {
+            for (RoomArea room : rooms) {
                 if (room.contains(wall.getPosition())) {
                     return true;
                 }
@@ -81,10 +81,10 @@ public class RoomGenerator {
         return walls;
     }
 
-    public void createCorridors(List<Room> rooms, List<Wall> walls) {
+    public void createCorridors(List<RoomArea> rooms, List<Wall> walls) {
         for (int i = 0; i < rooms.size() - 1; i++) {
-            Room room1 = rooms.get(i);
-            Room room2 = rooms.get(i + 1);
+            RoomArea room1 = rooms.get(i);
+            RoomArea room2 = rooms.get(i + 1);
 
             // Create L-shaped corridor between room centers
             int x1 = room1.getCenter().getX();
