@@ -33,4 +33,7 @@ public interface GUI {
     enum ACTION {
         UP, RIGHT, DOWN, LEFT, NONE, QUIT, SELECT
     }
+
+    void drawChest(Position position, Sprite sprite, boolean opened);
+
 }

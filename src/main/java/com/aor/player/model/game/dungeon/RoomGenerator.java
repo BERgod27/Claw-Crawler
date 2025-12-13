@@ -1,20 +1,19 @@
 package com.aor.player.model.game.dungeon;
 
+import com.aor.player.model.Position;
+import com.aor.player.model.game.elements.Chest;
 import com.aor.player.model.game.elements.Wall;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class RoomGenerator {
     private final int dungeonWidth;
     private final int dungeonHeight;
-    private final Random random;
 
     public RoomGenerator(int dungeonWidth, int dungeonHeight) {
         this.dungeonWidth = dungeonWidth;
         this.dungeonHeight = dungeonHeight;
-        this.random = new Random();
     }
 
     public List<RoomArea> generateRooms(int numRooms, int minSize, int maxSize) {
@@ -25,10 +24,10 @@ public class RoomGenerator {
         while (rooms.size() < numRooms && attempts < maxAttempts) {
             attempts++;
 
-            int width = random.nextInt(maxSize - minSize + 1) + minSize;
-            int height = random.nextInt(maxSize - minSize + 1) + minSize;
-            int x = random.nextInt(dungeonWidth - width - 1) + 1;
-            int y = random.nextInt(dungeonHeight - height - 1) + 1;
+            int width = (int) (Math.random() * (maxSize - minSize + 1)) + minSize;
+            int height = (int) (Math.random() * (maxSize - minSize + 1)) + minSize;
+            int x = (int) (Math.random() * (dungeonWidth - width - 1)) + 1;
+            int y = (int) (Math.random() * (dungeonHeight - height - 1)) + 1;
 
             RoomArea newRoom = new RoomArea(x, y, width, height);
 
@@ -51,7 +50,7 @@ public class RoomGenerator {
     public List<Wall> createWallsFromRooms(List<RoomArea> rooms) {
         List<Wall> walls = new ArrayList<>();
 
-        // Add dungeon perimeter walls
+        // Dungeon perimeter walls
         for (int x = 0; x < dungeonWidth; x++) {
             walls.add(new Wall(x, 0));
             walls.add(new Wall(x, dungeonHeight - 1));
@@ -61,19 +60,17 @@ public class RoomGenerator {
             walls.add(new Wall(dungeonWidth - 1, y));
         }
 
-        // Fill entire dungeon with walls
+        // Fill dungeon with walls
         for (int x = 1; x < dungeonWidth - 1; x++) {
             for (int y = 1; y < dungeonHeight - 1; y++) {
                 walls.add(new Wall(x, y));
             }
         }
 
-        // Carve out rooms (remove walls inside rooms)
+        // Carve out rooms
         walls.removeIf(wall -> {
             for (RoomArea room : rooms) {
-                if (room.contains(wall.getPosition())) {
-                    return true;
-                }
+                if (room.contains(wall.getPosition())) return true;
             }
             return false;
         });
@@ -86,7 +83,6 @@ public class RoomGenerator {
             RoomArea room1 = rooms.get(i);
             RoomArea room2 = rooms.get(i + 1);
 
-            // Create L-shaped corridor between room centers
             int x1 = room1.getCenter().getX();
             int y1 = room1.getCenter().getY();
             int x2 = room2.getCenter().getX();
@@ -98,8 +94,7 @@ public class RoomGenerator {
             final int corridorY = y1;
             for (int x = startX; x <= endX; x++) {
                 final int corridorX = x;
-                walls.removeIf(
-                        wall -> wall.getPosition().getX() == corridorX && wall.getPosition().getY() == corridorY);
+                walls.removeIf(wall -> wall.getPosition().getX() == corridorX && wall.getPosition().getY() == corridorY);
             }
 
             // Vertical corridor
@@ -108,8 +103,7 @@ public class RoomGenerator {
             final int corridorX2 = x2;
             for (int y = startY; y <= endY; y++) {
                 final int corridorY2 = y;
-                walls.removeIf(
-                        wall -> wall.getPosition().getX() == corridorX2 && wall.getPosition().getY() == corridorY2);
+                walls.removeIf(wall -> wall.getPosition().getX() == corridorX2 && wall.getPosition().getY() == corridorY2);
             }
         }
     }

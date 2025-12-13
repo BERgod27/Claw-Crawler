@@ -1,6 +1,7 @@
 package com.aor.player.gui;
 
 import com.aor.player.model.Position;
+import com.aor.player.model.Sprite;
 import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextColor;
 import com.googlecode.lanterna.graphics.TextGraphics;
@@ -28,9 +29,7 @@ public class LanternaGUI implements GUI {
     }
 
     private Screen createScreen(Terminal terminal) throws IOException {
-        final Screen screen;
-        screen = new TerminalScreen(terminal);
-
+        Screen screen = new TerminalScreen(terminal);
         screen.setCursorPosition(null);
         screen.startScreen();
         screen.doResizeIfNecessary();
@@ -39,46 +38,33 @@ public class LanternaGUI implements GUI {
 
     private Terminal createTerminal(int width, int height) throws IOException {
         TerminalSize terminalSize = new TerminalSize(width, height);
-
-        // Configure font for proper window sizing
         AWTTerminalFontConfiguration fontConfig = AWTTerminalFontConfiguration.newInstance(
                 new Font("Monospaced", Font.PLAIN, 12));
-
         DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory()
                 .setInitialTerminalSize(terminalSize)
                 .setTerminalEmulatorTitle("Dungeon Crawler")
                 .setTerminalEmulatorFontConfiguration(fontConfig)
                 .setForceTextTerminal(false);
-
-        Terminal terminal = terminalFactory.createTerminal();
-        return terminal;
+        return terminalFactory.createTerminal();
     }
 
     @Override
     public ACTION getNextAction() throws IOException {
-
         KeyStroke keyStroke = screen.pollInput();
-        if (keyStroke == null)
-            return ACTION.NONE;
+        if (keyStroke == null) return ACTION.NONE;
 
-        if (keyStroke.getKeyType() == KeyType.EOF)
-            return ACTION.QUIT;
-        if (keyStroke.getKeyType() == KeyType.Character && keyStroke.getCharacter() == 'q')
+        if (keyStroke.getKeyType() == KeyType.EOF ||
+                (keyStroke.getKeyType() == KeyType.Character && keyStroke.getCharacter() == 'q'))
             return ACTION.QUIT;
 
-        if (keyStroke.getKeyType() == KeyType.ArrowUp)
-            return ACTION.UP;
-        if (keyStroke.getKeyType() == KeyType.ArrowRight)
-            return ACTION.RIGHT;
-        if (keyStroke.getKeyType() == KeyType.ArrowDown)
-            return ACTION.DOWN;
-        if (keyStroke.getKeyType() == KeyType.ArrowLeft)
-            return ACTION.LEFT;
-
-        if (keyStroke.getKeyType() == KeyType.Enter)
-            return ACTION.SELECT;
-
-        return ACTION.NONE;
+        switch (keyStroke.getKeyType()) {
+            case ArrowUp: return ACTION.UP;
+            case ArrowRight: return ACTION.RIGHT;
+            case ArrowDown: return ACTION.DOWN;
+            case ArrowLeft: return ACTION.LEFT;
+            case Enter: return ACTION.SELECT;
+            default: return ACTION.NONE;
+        }
     }
 
     @Override
@@ -86,7 +72,6 @@ public class LanternaGUI implements GUI {
         TextGraphics graphics = screen.newTextGraphics();
         graphics.setForegroundColor(TextColor.Factory.fromString("#FFD700"));
         graphics.putString(position.getX(), position.getY(), "P");
-        graphics.setBackgroundColor(TextColor.Factory.fromString("#1a1a2e"));
     }
 
     @Override
@@ -106,36 +91,9 @@ public class LanternaGUI implements GUI {
     }
 
     @Override
-    public void drawText(Position position, String text, String color) {
-        TextGraphics graphics = screen.newTextGraphics();
-        graphics.setForegroundColor(TextColor.Factory.fromString(color));
-        graphics.putString(position.getX(), position.getY(), text);
-    }
-
-    @Override
-    public void drawSprite(Position position, com.aor.player.model.Sprite sprite) {
-        TextGraphics graphics = screen.newTextGraphics();
-
-        for (int y = 0; y < sprite.getHeight(); y++) {
-            for (int x = 0; x < sprite.getWidth(); x++) {
-                Color color = sprite.getPixel(x, y);
-
-                // Skip transparent pixels
-                if (color != null && color.getAlpha() > 128) {
-                    // Convert AWT Color to Lanterna TextColor
-                    String hexColor = String.format("#%02x%02x%02x",
-                            color.getRed(), color.getGreen(), color.getBlue());
-                    graphics.setForegroundColor(TextColor.Factory.fromString(hexColor));
-                    graphics.putString(position.getX() + x, position.getY() + y, "█");
-                }
-            }
-        }
-    }
-
-    @Override
     public void drawDoor(Position position) {
         TextGraphics graphics = screen.newTextGraphics();
-        graphics.setForegroundColor(TextColor.Factory.fromString("#00FF00")); // Green for doors
+        graphics.setForegroundColor(TextColor.Factory.fromString("#00FF00"));
         graphics.setBackgroundColor(TextColor.Factory.fromString("#003300"));
         graphics.putString(position.getX(), position.getY(), "▓");
     }
@@ -143,9 +101,16 @@ public class LanternaGUI implements GUI {
     @Override
     public void drawShopKeeper(Position position) {
         TextGraphics graphics = screen.newTextGraphics();
-        graphics.setForegroundColor(TextColor.Factory.fromString("#FFD700")); // Gold for shopkeeper
+        graphics.setForegroundColor(TextColor.Factory.fromString("#FFD700"));
         graphics.setBackgroundColor(TextColor.Factory.fromString("#4a3800"));
         graphics.putString(position.getX(), position.getY(), "S");
+    }
+
+    @Override
+    public void drawText(Position position, String text, String color) {
+        TextGraphics graphics = screen.newTextGraphics();
+        graphics.setForegroundColor(TextColor.Factory.fromString(color));
+        graphics.putString(position.getX(), position.getY(), text);
     }
 
     @Override
@@ -153,6 +118,39 @@ public class LanternaGUI implements GUI {
         TextGraphics graphics = screen.newTextGraphics();
         graphics.setForegroundColor(TextColor.Factory.fromString(color));
         graphics.putString(x, y, text);
+    }
+
+    @Override
+    public void drawSprite(Position position, Sprite sprite) {
+        TextGraphics graphics = screen.newTextGraphics();
+        for (int y = 0; y < sprite.getHeight(); y++) {
+            for (int x = 0; x < sprite.getWidth(); x++) {
+                Color color = sprite.getPixel(x, y);
+                if (color != null && color.getAlpha() > 128) {
+                    String hex = String.format("#%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue());
+                    graphics.setForegroundColor(TextColor.Factory.fromString(hex));
+                    graphics.putString(position.getX() + x, position.getY() + y, "█");
+                }
+            }
+        }
+    }
+
+    @Override
+    public void drawChest(Position position, Sprite sprite, boolean opened) {
+        TextGraphics graphics = screen.newTextGraphics();
+        for (int y = 0; y < sprite.getHeight(); y++) {
+            for (int x = 0; x < sprite.getWidth(); x++) {
+                Color color = sprite.getPixel(x, y);
+                if (color != null && color.getAlpha() > 128) {
+                    if (opened) {
+                        color = new Color(color.getRed()/2, color.getGreen()/2, color.getBlue()/2);
+                    }
+                    String hex = String.format("#%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue());
+                    graphics.setForegroundColor(TextColor.Factory.fromString(hex));
+                    graphics.putString(position.getX() + x, position.getY() + y, "█");
+                }
+            }
+        }
     }
 
     @Override

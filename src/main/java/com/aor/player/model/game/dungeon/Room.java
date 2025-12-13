@@ -1,10 +1,7 @@
 package com.aor.player.model.game.dungeon;
 
 import com.aor.player.model.Position;
-import com.aor.player.model.game.elements.Door;
-import com.aor.player.model.game.elements.Monster;
-import com.aor.player.model.game.elements.ShopKeeper;
-import com.aor.player.model.game.elements.Wall;
+import com.aor.player.model.game.elements.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,12 +13,14 @@ public class Room {
     private List<Monster> monsters;
     private List<Door> doors;
     private ShopKeeper shopKeeper;
+    private List<Chest> chests; // Keep it private
 
     public Room(String id) {
         this.id = id;
         this.walls = new ArrayList<>();
         this.monsters = new ArrayList<>();
         this.doors = new ArrayList<>();
+        this.chests = new ArrayList<>(); // Initialize chests here
     }
 
     public String getId() {
@@ -68,13 +67,20 @@ public class Room {
         this.doors.add(door);
     }
 
+    public void addChest(Chest chest) {
+        this.chests.add(chest);
+    }
+
+    public List<Chest> getChests() {
+        return Collections.unmodifiableList(chests);
+    }
+
     public boolean isEmpty(Position position) {
         for (Wall wall : walls) {
             if (wall.getPosition().equals(position))
                 return false;
         }
-        // Doors are passable - don't block movement
-        return true;
+        return true; // Doors and chests are passable by default
     }
 
     public Door getDoorAt(Position position) {
@@ -91,5 +97,23 @@ public class Room {
 
     public void setShopKeeper(ShopKeeper shopKeeper) {
         this.shopKeeper = shopKeeper;
+    }
+
+    public Chest getChestAt(Position position) {
+        for (Chest chest : chests) {
+            if (chest.getPosition().equals(position))
+                return chest;
+        }
+        return null;
+    }
+
+    public void setChestAt(Position position, Chest chest) {
+        for (int i = 0; i < chests.size(); i++) {
+            if (chests.get(i).getPosition().equals(position)) {
+                chests.set(i, chest);
+                return;
+            }
+        }
+        this.chests.add(chest); // Add if none exists
     }
 }

@@ -8,24 +8,24 @@ This project was developed by Bernardo Barbosa (up202403438@edu.fe.up.pt), João
 
 ## Implemented features
 
-- Dungeon environment
+- Dungeon environment - A dark background with grey walls;
+- Item shop - Where players may buy items to help them with their stats and journey;
+- Menu - The place where the player may exit the game, start it or read the instructions in order to know what to do;
+- Currency - A coin-based system that allows players to customize their stats and allowing for the playstyle that suits them best.
 
 ## Planned features
 
-- Different enemies with different attacks
-- Player input
-- Different dungeon levels with increasing difficulty
-- Item shop
-- Currency system
-- Chests
-- Equipment (weapons/armour)
-- Menu
-- Scoreboard
+- Different enemies with different attacks;
+- Different dungeon levels with increasing difficulty;
+- Scoreboard;
 
 ## Design
 
-### General structure
+### Controls
 
+![CONTROLS](docs/photos/instructions_pic.png)
+
+### General structure
 #### Current general UML explanation
 
 The game has different states (such as a game state and a menu state), each with its own controller and viewer. The model layer consists of elements such as the dungeon, menu, player, monsters, walls, and positions.
@@ -35,18 +35,18 @@ The main goal is to separate responsibilities:
 - Viewer: renders the model to the screen.
 - Model: represents the game world and its elements.
 
-![UML Diagram](./docs/General_UML.png)
+![UML Diagram](docs/photos/General_UML.png)
 
 #### Mockup 
 
 - **Mockup 1:** Run test mockup  
-![Mockup 1](./docs/mockup1.png)
+![Mockup 1](docs/photos/mockup1.png)
 
 - **Mockup 2:** Thinking / write-hand mockup 
-![Mockup 2](./docs/mockup2.png)
+![Mockup 2](docs/photos/mockup2.png)
 
 - **Mockup 3:** Thinking / write-hand mockup
-![Mockup 3](./docs/mockup3.png)
+![Mockup 3](docs/photos/mockup3.png)
 
 ##### Game and state layer
 
