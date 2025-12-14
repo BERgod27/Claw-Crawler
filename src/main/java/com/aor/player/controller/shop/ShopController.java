@@ -9,16 +9,19 @@ import com.aor.player.model.game.items.Item;
 import com.aor.player.model.game.items.Usable;
 import com.aor.player.model.game.shop.Shop;
 import com.aor.player.states.GameState;
+import com.aor.player.states.StateFactory;
 
 import java.io.IOException;
 
 public class ShopController extends Controller<Shop> {
     private final Dungeon dungeon;
+    private final StateFactory stateFactory;
     private int selectedIndex = 0;
 
-    public ShopController(Dungeon dungeon) {
+    public ShopController(Dungeon dungeon, StateFactory stateFactory) {
         super(new Shop());
         this.dungeon = dungeon;
+        this.stateFactory = stateFactory;
     }
 
     @Override
@@ -34,8 +37,8 @@ public class ShopController extends Controller<Shop> {
                 purchaseSelectedItem(game);
                 break;
             case QUIT:
-                // Return to game
-                game.setState(new GameState(dungeon));
+                // Return to game using factory
+                game.setState(stateFactory.createGameState(dungeon));
                 break;
         }
     }

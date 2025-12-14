@@ -36,6 +36,11 @@ public class DungeonFactory {
         // Add shopkeeper to main room (top-right corner)
         mainRoom.setShopKeeper(new ShopKeeper(DUNGEON_WIDTH - 10, 5));
 
+        // Add monsters to rooms
+        addMonstersToMainRoom(mainRoom);
+        addMonstersToEastRoom(eastRoom);
+        addMonstersToWestRoom(westRoom);
+
         // Calculate door position (centered vertically)
         int doorCenterY = DUNGEON_HEIGHT / 2;
         int doorStartY = doorCenterY - (DOOR_HEIGHT / 2);
@@ -69,6 +74,22 @@ public class DungeonFactory {
         dungeon.setPlayer(new Player(centerX, centerY));
 
         return dungeon;
+    }
+
+    private void addMonstersToMainRoom(Room room) {
+        room.addMonster(com.aor.player.model.game.elements.MonsterFactory.createSlime(20, 10));
+        room.addMonster(com.aor.player.model.game.elements.MonsterFactory.createSlime(30, 15));
+        room.addMonster(com.aor.player.model.game.elements.MonsterFactory.createSlime(50, 20));
+    }
+
+    private void addMonstersToEastRoom(Room room) {
+        room.addMonster(com.aor.player.model.game.elements.MonsterFactory.createTrollKing(DUNGEON_WIDTH / 2,
+                DUNGEON_HEIGHT / 2));
+    }
+
+    private void addMonstersToWestRoom(Room room) {
+        room.addMonster(com.aor.player.model.game.elements.MonsterFactory.createVampireLord(DUNGEON_WIDTH / 2,
+                DUNGEON_HEIGHT / 2));
     }
 
     /**

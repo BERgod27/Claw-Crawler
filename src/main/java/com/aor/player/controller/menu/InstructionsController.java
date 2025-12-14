@@ -6,19 +6,22 @@ import com.aor.player.gui.GUI;
 import com.aor.player.model.menu.Instructions;
 import com.aor.player.model.menu.Menu;
 import com.aor.player.states.MenuState;
+import com.aor.player.states.StateFactory;
 
 import java.io.IOException;
 
 public class InstructionsController extends Controller<Instructions> {
-    public InstructionsController(Instructions instructions) {
+    private final StateFactory stateFactory;
+
+    public InstructionsController(Instructions instructions, StateFactory stateFactory) {
         super(instructions);
+        this.stateFactory = stateFactory;
     }
 
     @Override
     public void step(Game game, GUI.ACTION action, long time) throws IOException {
-        // Any key press returns to menu
-        if (action != GUI.ACTION.NONE) {
-            game.setState(new MenuState(new Menu()));
+        if (action == GUI.ACTION.QUIT) {
+            game.setState(stateFactory.createMenuState());
         }
     }
 }

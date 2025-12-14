@@ -7,23 +7,20 @@ import com.aor.player.viewer.Viewer;
 import com.aor.player.viewer.game.GameViewer;
 
 public class GameState extends State<Dungeon> {
-    private final GameViewer viewer;
-    private final DungeonController controller;
+    private final StateFactory stateFactory;
 
-    public GameState(Dungeon dungeon) {
-        super(dungeon);
-        this.viewer = new GameViewer(dungeon);
-        this.controller = new DungeonController(dungeon);
+    public GameState(Dungeon model, StateFactory stateFactory) {
+        super(model);
+        this.stateFactory = stateFactory;
     }
 
     @Override
-    protected Viewer<Dungeon> getViewer() {
-        return viewer;
+    public Viewer<Dungeon> getViewer() {
+        return new GameViewer(getModel());
     }
 
     @Override
-    protected Controller<Dungeon> getController() {
-        return controller;
+    public Controller<Dungeon> getController() {
+        return new DungeonController(getModel(), stateFactory);
     }
-
 }

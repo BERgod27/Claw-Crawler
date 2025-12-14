@@ -6,78 +6,146 @@ import com.aor.player.gui.GUI;
 import com.aor.player.model.Position;
 import com.aor.player.model.game.dungeon.Dungeon;
 import com.aor.player.model.game.elements.Chest;
+import com.aor.player.model.game.elements.Door;
+import com.aor.player.model.game.elements.Monster;
+import com.aor.player.states.StateFactory;
 
 import java.io.IOException;
 
 public class DungeonController extends Controller<Dungeon> {
-    public DungeonController(Dungeon dungeon) {
+    private final StateFactory stateFactory;
+    private Monster pendingMonster = null;
+
+    public DungeonController(Dungeon dungeon, StateFactory stateFactory) {
         super(dungeon);
+        this.stateFactory = stateFactory;
     }
 
     @Override
     public void step(Game game, GUI.ACTION action, long time) throws IOException {
+        // Handle movement
         switch (action) {
             case UP:
-                movePlayerUp(game);
+                movePlayerUp();
                 break;
             case RIGHT:
-                movePlayerRight(game);
+                movePlayerRight();
                 break;
             case DOWN:
-                movePlayerDown(game);
+                movePlayerDown();
                 break;
             case LEFT:
-                movePlayerLeft(game);
+                movePlayerLeft();
                 break;
             case SELECT:
                 checkShopKeeper(game);
                 checkChestInteraction();
                 break;
+            case INVENTORY:
+                game.setState(stateFactory.createInventoryState(getModel()));
+                return;
             case QUIT:
                 game.setState(null);
-                break;
+                return;
             default:
                 break;
         }
+
+        // Check if there's a pending monster combat from movement
+        if (pendingMonster != null) {
+            Monster monster = pendingMonster;
+            pendingMonster = null;
+            game.setState(stateFactory.createCombatState(getModel(), monster));
+        }
     }
 
-    private void movePlayerLeft(Game game) { movePlayer(game, getModel().getPlayer().getPosition().getLeft()); }
-    private void movePlayerRight(Game game) { movePlayer(game, getModel().getPlayer().getPosition().getRight()); }
-    private void movePlayerUp(Game game) { movePlayer(game, getModel().getPlayer().getPosition().getUp()); }
-    private void movePlayerDown(Game game) { movePlayer(game, getModel().getPlayer().getPosition().getDown()); }
+    public void movePlayerLeft() {
+        movePlayer(getModel().getPlayer().getPosition().getLeft());
+    }
 
-    private void movePlayer(Game game, Position position) {
-        getModel().movePlayer(position);
+    public void movePlayerRight() {
+        movePlayer(getModel().getPlayer().getPosition().getRight());
+    }
 
-        // Check for door transition
-        checkDoorTransition();
+    public void movePlayerUp() {
+        movePlayer(getModel().getPlayer().getPosition().getUp());
+    }
 
-        // Check for shopkeeper interaction
-        checkShopKeeper(game);
+    public void movePlayerDown() {
+        movePlayer(getModel().getPlayer().getPosition().getDown());
+    }
 
-        // Check for chest interaction automatically on move
+    private void movePlayer(Position newPosition) {
+        // Don't do anything if position hasn't changed
+        if (newPosition.equals(getModel().getPlayer().getPosition())) {
+            return;
+        }
+
+        // Check for door collision BEFORE moving
+        Door door = checkDoorAtPosition(newPosition);
+        if (door != null) {
+            // Transition to the target room
+            getModel().changeRoom(door.getTargetRoomId(), door.getSpawnPosition());
+            return;
+        }
+
+        // Check for monster collision BEFORE moving
+        Monster monster = checkMonsterAtPosition(newPosition);
+        if (monster != null) {
+            pendingMonster = monster;
+            return;
+        }
+
+        // No collision, perform normal movement
+        getModel().movePlayer(newPosition);
+
+        // Check for chest interaction automatically after moving
         checkChestInteraction();
     }
 
-    private void checkDoorTransition() {
-        Position playerPos = getModel().getPlayer().getPosition();
+    private Monster checkMonsterAtPosition(Position position) {
+        // Check if player's sprite hitbox overlaps with any monster's sprite hitbox
+        // Using AABB (Axis-Aligned Bounding Box) collision detection
+
+        int playerX = position.getX();
+        int playerY = position.getY();
+        int playerWidth = getModel().getPlayer().getSpriteWidth();
+        int playerHeight = getModel().getPlayer().getSpriteHeight();
+
+        for (Monster monster : getModel().getMonsters()) {
+            int monsterX = monster.getPosition().getX();
+            int monsterY = monster.getPosition().getY();
+            int monsterWidth = monster.getSpriteWidth();
+            int monsterHeight = monster.getSpriteHeight();
+
+            // AABB collision: check if rectangles overlap
+            boolean overlapX = playerX < monsterX + monsterWidth && playerX + playerWidth > monsterX;
+            boolean overlapY = playerY < monsterY + monsterHeight && playerY + playerHeight > monsterY;
+
+            if (overlapX && overlapY) {
+                return monster;
+            }
+        }
+        return null;
+    }
+
+    private Door checkDoorAtPosition(Position position) {
+        // Check all cells that the player sprite would occupy
         for (int dy = 0; dy < getModel().getPlayer().getSpriteHeight(); dy++) {
             for (int dx = 0; dx < getModel().getPlayer().getSpriteWidth(); dx++) {
-                Position checkPos = new Position(playerPos.getX() + dx, playerPos.getY() + dy);
-                var door = getModel().getDoorAt(checkPos);
+                Position checkPos = new Position(position.getX() + dx, position.getY() + dy);
+                Door door = getModel().getDoorAt(checkPos);
                 if (door != null) {
-                    getModel().changeRoom(door.getTargetRoomId(), door.getSpawnPosition());
-                    return;
+                    return door;
                 }
             }
         }
+        return null;
     }
 
     private void checkShopKeeper(Game game) {
         if (isPlayerNearShopKeeper()) {
-            game.setState(new com.aor.player.states.ShopState(
-                    new com.aor.player.model.game.shop.Shop(), getModel()
-            ));
+            game.setState(stateFactory.createShopState(getModel()));
         }
     }
 
@@ -89,7 +157,7 @@ public class DungeonController extends Controller<Dungeon> {
         for (Chest chest : currentRoom.getChests()) {
             if (chest.getPosition().equals(playerPos) && !chest.isOpened()) {
                 int gold = chest.open();
-                getModel().getPlayer().addGold(gold); // Give player 20 gold
+                getModel().getPlayer().addGold(gold);
             }
         }
     }

@@ -3,20 +3,21 @@ package com.aor.player.controller.menu;
 import com.aor.player.Game;
 import com.aor.player.controller.Controller;
 import com.aor.player.gui.GUI;
+import com.aor.player.model.game.dungeon.Dungeon;
 import com.aor.player.model.game.dungeon.DungeonFactory;
 import com.aor.player.model.menu.Instructions;
 import com.aor.player.model.menu.Menu;
-import com.aor.player.states.GameState;
 import com.aor.player.states.InstructionsState;
+import com.aor.player.states.StateFactory;
 
 import java.io.IOException;
 
 public class MenuController extends Controller<Menu> {
-    private final DungeonFactory dungeonFactory;
+    private final StateFactory stateFactory;
 
-    public MenuController(Menu menu, DungeonFactory dungeonFactory) {
+    public MenuController(Menu menu, StateFactory stateFactory) {
         super(menu);
-        this.dungeonFactory = dungeonFactory;
+        this.stateFactory = stateFactory;
     }
 
     @Override
@@ -31,10 +32,13 @@ public class MenuController extends Controller<Menu> {
             case SELECT:
                 if (getModel().isSelectedExit())
                     game.setState(null);
-                if (getModel().isSelectedStart())
-                    game.setState(new GameState(dungeonFactory.createDungeon()));
+                if (getModel().isSelectedStart()) {
+                    DungeonFactory factory = new DungeonFactory();
+                    Dungeon dungeon = factory.createDungeon();
+                    game.setState(stateFactory.createGameState(dungeon));
+                }
                 if (getModel().isSelectedInstructions())
-                    game.setState(new InstructionsState(new Instructions()));
+                    game.setState(stateFactory.createInstructionsState());
                 break;
             case QUIT:
                 game.setState(null);

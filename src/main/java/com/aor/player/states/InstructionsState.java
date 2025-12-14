@@ -7,22 +7,20 @@ import com.aor.player.viewer.Viewer;
 import com.aor.player.viewer.menu.InstructionsViewer;
 
 public class InstructionsState extends State<Instructions> {
-    private final InstructionsViewer viewer;
-    private final InstructionsController controller;
+    private final StateFactory stateFactory;
 
-    public InstructionsState(Instructions instructions) {
-        super(instructions);
-        this.viewer = new InstructionsViewer(instructions);
-        this.controller = new InstructionsController(instructions);
+    public InstructionsState(Instructions model, StateFactory stateFactory) {
+        super(model);
+        this.stateFactory = stateFactory;
     }
 
     @Override
-    protected Viewer<Instructions> getViewer() {
-        return viewer;
+    public Viewer<Instructions> getViewer() {
+        return new InstructionsViewer(getModel());
     }
 
     @Override
-    protected Controller<Instructions> getController() {
-        return controller;
+    public Controller<Instructions> getController() {
+        return new InstructionsController(getModel(), stateFactory);
     }
 }

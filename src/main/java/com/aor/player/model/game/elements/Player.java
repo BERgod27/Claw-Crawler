@@ -10,6 +10,7 @@ import java.util.List;
 public class Player extends Element {
     private static final int DEFAULT_SPEED = 10;
     private static final int DEFAULT_ARMOR = 10;
+    private static final int DEFAULT_ATTACK = 10;
     private static final int DEFAULT_HEALTH = 100;
     private static final int MAX_HEALTH = 100;
     private static final int DEFAULT_GOLD = 100;
@@ -32,7 +33,7 @@ public class Player extends Element {
         this.baseArmor = DEFAULT_ARMOR;
         this.health = DEFAULT_HEALTH;
         this.gold = DEFAULT_GOLD;
-        this.attack = 0;
+        this.attack = DEFAULT_ATTACK;
         this.inventory = new ArrayList<>();
         this.equippedArmor = null;
         this.equippedSword = null;
@@ -120,5 +121,35 @@ public class Player extends Element {
 
     public Sword getEquippedSword() {
         return equippedSword;
+    }
+
+    /**
+     * Gets the maximum health value
+     * 
+     * @return Maximum health points
+     */
+    public int getMaxHealth() {
+        return MAX_HEALTH;
+    }
+
+    /**
+     * Reduces player health by damage amount, accounting for armor.
+     * Actual damage is calculated as: max(1, damage - armor)
+     * Health cannot go below 0.
+     * 
+     * @param damage Raw damage before armor reduction
+     */
+    public void takeDamage(int damage) {
+        int actualDamage = Math.max(1, damage - getArmor());
+        this.health = Math.max(0, this.health - actualDamage);
+    }
+
+    /**
+     * Checks if the player is dead (health <= 0)
+     * 
+     * @return true if player is dead, false otherwise
+     */
+    public boolean isDead() {
+        return health <= 0;
     }
 }

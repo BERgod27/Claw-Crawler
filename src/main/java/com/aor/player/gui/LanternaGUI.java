@@ -51,19 +51,30 @@ public class LanternaGUI implements GUI {
     @Override
     public ACTION getNextAction() throws IOException {
         KeyStroke keyStroke = screen.pollInput();
-        if (keyStroke == null) return ACTION.NONE;
+        if (keyStroke == null)
+            return ACTION.NONE;
 
         if (keyStroke.getKeyType() == KeyType.EOF ||
                 (keyStroke.getKeyType() == KeyType.Character && keyStroke.getCharacter() == 'q'))
             return ACTION.QUIT;
 
+        // Handle inventory key
+        if (keyStroke.getKeyType() == KeyType.Character && keyStroke.getCharacter() == 'i')
+            return ACTION.INVENTORY;
+
         switch (keyStroke.getKeyType()) {
-            case ArrowUp: return ACTION.UP;
-            case ArrowRight: return ACTION.RIGHT;
-            case ArrowDown: return ACTION.DOWN;
-            case ArrowLeft: return ACTION.LEFT;
-            case Enter: return ACTION.SELECT;
-            default: return ACTION.NONE;
+            case ArrowUp:
+                return ACTION.UP;
+            case ArrowRight:
+                return ACTION.RIGHT;
+            case ArrowDown:
+                return ACTION.DOWN;
+            case ArrowLeft:
+                return ACTION.LEFT;
+            case Enter:
+                return ACTION.SELECT;
+            default:
+                return ACTION.NONE;
         }
     }
 
@@ -143,7 +154,7 @@ public class LanternaGUI implements GUI {
                 Color color = sprite.getPixel(x, y);
                 if (color != null && color.getAlpha() > 128) {
                     if (opened) {
-                        color = new Color(color.getRed()/2, color.getGreen()/2, color.getBlue()/2);
+                        color = new Color(color.getRed() / 2, color.getGreen() / 2, color.getBlue() / 2);
                     }
                     String hex = String.format("#%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue());
                     graphics.setForegroundColor(TextColor.Factory.fromString(hex));

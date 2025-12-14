@@ -111,11 +111,48 @@ public class Dungeon {
         return true;
     }
 
+    /**
+     * Checks if there's a monster at the given position using hitbox collision
+     * 
+     * @param position Position to check
+     * @return true if a monster's hitbox overlaps this position
+     */
     public boolean isMonster(Position position) {
-        for (Monster monster : getMonsters())
-            if (monster.getPosition().equals(position))
+        for (Monster monster : getMonsters()) {
+            int monsterX = monster.getPosition().getX();
+            int monsterY = monster.getPosition().getY();
+            int monsterWidth = monster.getSpriteWidth();
+            int monsterHeight = monster.getSpriteHeight();
+
+            // Check if position is within monster's bounding box
+            if (position.getX() >= monsterX && position.getX() < monsterX + monsterWidth &&
+                    position.getY() >= monsterY && position.getY() < monsterY + monsterHeight) {
                 return true;
+            }
+        }
         return false;
+    }
+
+    /**
+     * Gets the monster at the specified position using hitbox collision
+     * 
+     * @param position Position to check
+     * @return Monster whose hitbox contains this position, or null if none exists
+     */
+    public Monster getMonsterAt(Position position) {
+        for (Monster monster : getMonsters()) {
+            int monsterX = monster.getPosition().getX();
+            int monsterY = monster.getPosition().getY();
+            int monsterWidth = monster.getSpriteWidth();
+            int monsterHeight = monster.getSpriteHeight();
+
+            // Check if position is within monster's bounding box
+            if (position.getX() >= monsterX && position.getX() < monsterX + monsterWidth &&
+                    position.getY() >= monsterY && position.getY() < monsterY + monsterHeight) {
+                return monster;
+            }
+        }
+        return null;
     }
 
     public Door getDoorAt(Position position) {
