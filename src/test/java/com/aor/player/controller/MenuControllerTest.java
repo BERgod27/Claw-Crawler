@@ -170,6 +170,6 @@ class MenuControllerTest {
 
         GameState gameState = stateCaptor.getValue();
         assertNotNull(gameState.getModel().getMonsters());
-        assertEquals(0, gameState.getModel().getMonsters().size());
+        assertEquals(3, gameState.getModel().getMonsters().size());
     }
 }

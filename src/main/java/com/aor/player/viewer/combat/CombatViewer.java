@@ -53,6 +53,11 @@ public class CombatViewer extends Viewer<Dungeon> {
     public void draw(GUI gui) {
         gui.clear();
         drawCombatUI(gui);
+        try {
+            gui.refresh();
+        } catch (Exception e) {
+            System.err.println("Error refreshing GUI: " + e.getMessage());
+        }
     }
 
     @Override

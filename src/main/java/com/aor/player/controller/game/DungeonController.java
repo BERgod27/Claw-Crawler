@@ -5,6 +5,8 @@ import com.aor.player.controller.Controller;
 import com.aor.player.gui.GUI;
 import com.aor.player.model.Position;
 import com.aor.player.model.game.dungeon.Dungeon;
+import com.aor.player.model.game.elements.Door;
+import com.aor.player.model.game.elements.Monster;
 import com.aor.player.states.StateFactory;
 
 import java.io.IOException;
@@ -29,22 +31,19 @@ public class DungeonController extends Controller<Dungeon> {
         if (action == GUI.ACTION.LEFT)
             movePlayerLeft();
 
-        // Check for monster collision after movement
-        Position playerPos = getModel().getPlayer().getPosition();
-        com.aor.player.model.game.elements.Monster monster = getModel().getMonsterAt(playerPos);
-        if (monster != null) {
-            // Initiate combat
+        // Check if there's a pending monster combat from movement
+        if (pendingMonster != null) {
+            Monster monster = pendingMonster;
+            pendingMonster = null;
             game.setState(stateFactory.createCombatState(getModel(), monster));
             return;
         }
 
         // Handle other actions
         if (action == GUI.ACTION.SELECT && isPlayerNearShopKeeper()) {
-            // Open shop menu using factory
             game.setState(stateFactory.createShopState(getModel()));
         }
         if (action == GUI.ACTION.INVENTORY) {
-            // Open inventory using factory
             game.setState(stateFactory.createInventoryState(getModel()));
         }
         if (action == GUI.ACTION.QUIT)
@@ -67,14 +66,63 @@ public class DungeonController extends Controller<Dungeon> {
         movePlayer(getModel().getPlayer().getPosition().getDown());
     }
 
-    private void movePlayer(Position position) {
-        getModel().movePlayer(position);
+    private void movePlayer(Position newPosition) {
+        // Don't do anything if position hasn't changed
+        if (newPosition.equals(getModel().getPlayer().getPosition())) {
+            return;
+        }
 
-        // Check if player is on a door after moving
-        checkDoorTransition();
+        // Check for door collision BEFORE moving
+        Door door = checkDoorAtPosition(newPosition);
+        if (door != null) {
+            // Transition to the target room
+            getModel().changeRoom(door.getTargetRoomId(), door.getSpawnPosition());
+            return;
+        }
 
-        // Check if player is near shopkeeper
+        // Check for monster collision BEFORE moving
+        Monster monster = checkMonsterAtPosition(newPosition);
+        if (monster != null) {
+            pendingMonster = monster;
+            return;
+        }
+
+        // No collision, perform normal movement
+        getModel().movePlayer(newPosition);
+
+        // Check if player is near shopkeeper after moving
         checkShopKeeperCollision();
+    }
+
+    private com.aor.player.model.game.elements.Monster pendingMonster = null;
+
+    private Monster checkMonsterAtPosition(Position position) {
+        // Check if any part of the player sprite (7x7) would collide with any monster
+        for (int dy = 0; dy < getModel().getPlayer().getSpriteHeight(); dy++) {
+            for (int dx = 0; dx < getModel().getPlayer().getSpriteWidth(); dx++) {
+                Position checkPos = new Position(position.getX() + dx, position.getY() + dy);
+                for (Monster monster : getModel().getMonsters()) {
+                    if (monster.getPosition().equals(checkPos)) {
+                        return monster;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    private Door checkDoorAtPosition(Position position) {
+        // Check all cells that the player sprite would occupy
+        for (int dy = 0; dy < getModel().getPlayer().getSpriteHeight(); dy++) {
+            for (int dx = 0; dx < getModel().getPlayer().getSpriteWidth(); dx++) {
+                Position checkPos = new Position(position.getX() + dx, position.getY() + dy);
+                Door door = getModel().getDoorAt(checkPos);
+                if (door != null) {
+                    return door;
+                }
+            }
+        }
+        return null;
     }
 
     private void checkShopKeeperCollision() {
