@@ -100,4 +100,24 @@ public class Monster extends Element {
     public boolean isDead() {
         return health <= 0;
     }
+
+    /**
+     * Gets the width of the monster's sprite
+     * 
+     * @return Sprite width in cells, defaults to 1 if sprite not available
+     */
+    public int getSpriteWidth() {
+        com.aor.player.model.Sprite sprite = com.aor.player.viewer.game.MonsterViewer.getSpriteForType(type);
+        return sprite != null ? sprite.getWidth() : 1;
+    }
+
+    /**
+     * Gets the height of the monster's sprite
+     * 
+     * @return Sprite height in cells, defaults to 1 if sprite not available
+     */
+    public int getSpriteHeight() {
+        com.aor.player.model.Sprite sprite = com.aor.player.viewer.game.MonsterViewer.getSpriteForType(type);
+        return sprite != null ? sprite.getHeight() : 1;
+    }
 }

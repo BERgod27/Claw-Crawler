@@ -97,15 +97,26 @@ public class DungeonController extends Controller<Dungeon> {
     private com.aor.player.model.game.elements.Monster pendingMonster = null;
 
     private Monster checkMonsterAtPosition(Position position) {
-        // Check if any part of the player sprite (7x7) would collide with any monster
-        for (int dy = 0; dy < getModel().getPlayer().getSpriteHeight(); dy++) {
-            for (int dx = 0; dx < getModel().getPlayer().getSpriteWidth(); dx++) {
-                Position checkPos = new Position(position.getX() + dx, position.getY() + dy);
-                for (Monster monster : getModel().getMonsters()) {
-                    if (monster.getPosition().equals(checkPos)) {
-                        return monster;
-                    }
-                }
+        // Check if player's sprite hitbox overlaps with any monster's sprite hitbox
+        // Using AABB (Axis-Aligned Bounding Box) collision detection
+
+        int playerX = position.getX();
+        int playerY = position.getY();
+        int playerWidth = getModel().getPlayer().getSpriteWidth();
+        int playerHeight = getModel().getPlayer().getSpriteHeight();
+
+        for (Monster monster : getModel().getMonsters()) {
+            int monsterX = monster.getPosition().getX();
+            int monsterY = monster.getPosition().getY();
+            int monsterWidth = monster.getSpriteWidth();
+            int monsterHeight = monster.getSpriteHeight();
+
+            // AABB collision: check if rectangles overlap
+            boolean overlapX = playerX < monsterX + monsterWidth && playerX + playerWidth > monsterX;
+            boolean overlapY = playerY < monsterY + monsterHeight && playerY + playerHeight > monsterY;
+
+            if (overlapX && overlapY) {
+                return monster;
             }
         }
         return null;

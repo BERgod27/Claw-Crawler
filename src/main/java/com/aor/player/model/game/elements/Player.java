@@ -10,6 +10,7 @@ import java.util.List;
 public class Player extends Element {
     private static final int DEFAULT_SPEED = 10;
     private static final int DEFAULT_ARMOR = 10;
+    private static final int DEFAULT_ATTACK = 10;
     private static final int DEFAULT_HEALTH = 100;
     private static final int MAX_HEALTH = 100;
     private static final int DEFAULT_GOLD = 100;
@@ -32,7 +33,7 @@ public class Player extends Element {
         this.baseArmor = DEFAULT_ARMOR;
         this.health = DEFAULT_HEALTH;
         this.gold = DEFAULT_GOLD;
-        this.attack = 0;
+        this.attack = DEFAULT_ATTACK;
         this.inventory = new ArrayList<>();
         this.equippedArmor = null;
         this.equippedSword = null;
