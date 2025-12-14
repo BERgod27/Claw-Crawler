@@ -10,11 +10,13 @@ import com.aor.player.viewer.menu.MenuViewer;
 public class MenuState extends State<Menu> {
     private final MenuViewer viewer;
     private final MenuController controller;
+    private final StateFactory stateFactory;
 
-    public MenuState(Menu model) {
+    public MenuState(Menu model, StateFactory stateFactory) {
         super(model);
+        this.stateFactory = stateFactory;
         this.viewer = new MenuViewer(model);
-        this.controller = new MenuController(model, new DungeonFactory());
+        this.controller = new MenuController(model, stateFactory);
     }
 
     @Override

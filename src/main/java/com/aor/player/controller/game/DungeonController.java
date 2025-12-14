@@ -5,16 +5,21 @@ import com.aor.player.controller.Controller;
 import com.aor.player.gui.GUI;
 import com.aor.player.model.Position;
 import com.aor.player.model.game.dungeon.Dungeon;
+import com.aor.player.states.StateFactory;
 
 import java.io.IOException;
 
 public class DungeonController extends Controller<Dungeon> {
-    public DungeonController(Dungeon dungeon) {
+    private final StateFactory stateFactory;
+
+    public DungeonController(Dungeon dungeon, StateFactory stateFactory) {
         super(dungeon);
+        this.stateFactory = stateFactory;
     }
 
     @Override
     public void step(Game game, GUI.ACTION action, long time) throws IOException {
+        // Handle movement
         if (action == GUI.ACTION.UP)
             movePlayerUp();
         if (action == GUI.ACTION.RIGHT)
@@ -23,13 +28,24 @@ public class DungeonController extends Controller<Dungeon> {
             movePlayerDown();
         if (action == GUI.ACTION.LEFT)
             movePlayerLeft();
+
+        // Check for monster collision after movement
+        Position playerPos = getModel().getPlayer().getPosition();
+        com.aor.player.model.game.elements.Monster monster = getModel().getMonsterAt(playerPos);
+        if (monster != null) {
+            // Initiate combat
+            game.setState(stateFactory.createCombatState(getModel(), monster));
+            return;
+        }
+
+        // Handle other actions
         if (action == GUI.ACTION.SELECT && isPlayerNearShopKeeper()) {
-            // Open shop menu
-            game.setState(new com.aor.player.states.ShopState(new com.aor.player.model.game.shop.Shop(), getModel()));
+            // Open shop menu using factory
+            game.setState(stateFactory.createShopState(getModel()));
         }
         if (action == GUI.ACTION.INVENTORY) {
-            // Open inventory
-            game.setState(new com.aor.player.states.InventoryState(getModel()));
+            // Open inventory using factory
+            game.setState(stateFactory.createInventoryState(getModel()));
         }
         if (action == GUI.ACTION.QUIT)
             game.setState(null);
@@ -91,5 +107,3 @@ public class DungeonController extends Controller<Dungeon> {
     }
 
 }
-
-    

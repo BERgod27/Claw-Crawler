@@ -9,10 +9,12 @@ import com.aor.player.viewer.inventory.InventoryViewer;
 public class InventoryState extends State<Dungeon> {
     private final InventoryController controller;
     private final InventoryViewer viewer;
+    private final StateFactory stateFactory;
 
-    public InventoryState(Dungeon dungeon) {
+    public InventoryState(Dungeon dungeon, StateFactory stateFactory) {
         super(dungeon);
-        this.controller = new InventoryController(dungeon);
+        this.stateFactory = stateFactory;
+        this.controller = new InventoryController(dungeon, stateFactory);
         this.viewer = new InventoryViewer(dungeon);
     }
 

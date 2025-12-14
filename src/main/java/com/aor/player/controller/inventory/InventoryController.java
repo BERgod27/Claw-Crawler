@@ -8,14 +8,17 @@ import com.aor.player.model.game.items.Equippable;
 import com.aor.player.model.game.items.Item;
 import com.aor.player.model.game.items.Usable;
 import com.aor.player.states.GameState;
+import com.aor.player.states.StateFactory;
 
 import java.io.IOException;
 
 public class InventoryController extends Controller<Dungeon> {
+    private final StateFactory stateFactory;
     private int selectedIndex = 0;
 
-    public InventoryController(Dungeon dungeon) {
+    public InventoryController(Dungeon dungeon, StateFactory stateFactory) {
         super(dungeon);
+        this.stateFactory = stateFactory;
     }
 
     @Override
@@ -33,8 +36,8 @@ public class InventoryController extends Controller<Dungeon> {
                 break;
             case QUIT:
             case INVENTORY:
-                // Close inventory and return to game
-                game.setState(new GameState(getModel()));
+                // Close inventory and return to game using factory
+                game.setState(stateFactory.createGameState(getModel()));
                 break;
         }
     }

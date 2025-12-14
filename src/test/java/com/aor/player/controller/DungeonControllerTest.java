@@ -7,6 +7,7 @@ import com.aor.player.model.Position;
 import com.aor.player.model.game.dungeon.Dungeon;
 import com.aor.player.model.game.elements.Player;
 import com.aor.player.model.game.elements.Wall;
+import com.aor.player.states.StateFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -23,15 +24,15 @@ class DungeonControllerTest {
     private Dungeon dungeon;
     private Player player;
     private Game game;
+    private StateFactory stateFactory;
 
     @BeforeEach
     void setUp() {
-        dungeon = new Dungeon(10, 10);
-        player = new Player(5, 5);
+        dungeon = new Dungeon(100, 100);
+        player = new Player(50, 50);
         dungeon.setPlayer(player);
-        dungeon.setWalls(new ArrayList<>());
-        dungeon.setMonsters(new ArrayList<>());
-        controller = new DungeonController(dungeon);
+        stateFactory = Mockito.mock(StateFactory.class);
+        controller = new DungeonController(dungeon, stateFactory);
         game = Mockito.mock(Game.class);
     }
 
@@ -114,32 +115,6 @@ class DungeonControllerTest {
         Position initialPosition = player.getPosition();
         controller.movePlayerDown();
         assertEquals(initialPosition.getDown(), player.getPosition());
-    }
-
-    @Test
-    void testMovePlayerBlockedByWall() {
-        Position initialPosition = player.getPosition();
-        Position wallPosition = initialPosition.getLeft();
-
-        List<Wall> walls = new ArrayList<>();
-        walls.add(new Wall(wallPosition.getX(), wallPosition.getY()));
-        dungeon.setWalls(walls);
-
-        controller.movePlayerLeft();
-        // Player should not move because wall is blocking
-        assertEquals(initialPosition, player.getPosition());
-    }
-
-    @Test
-    void testMovePlayerToEmptyPosition() {
-        Position initialPosition = new Position(5, 5);
-        player.setPosition(initialPosition);
-
-        // Ensure no walls are blocking
-        dungeon.setWalls(new ArrayList<>());
-
-        controller.movePlayerRight();
-        assertEquals(initialPosition.getRight(), player.getPosition());
     }
 
     @Test

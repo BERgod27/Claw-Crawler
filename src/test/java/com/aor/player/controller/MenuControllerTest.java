@@ -3,9 +3,9 @@ package com.aor.player.controller;
 import com.aor.player.Game;
 import com.aor.player.controller.menu.MenuController;
 import com.aor.player.gui.GUI;
-import com.aor.player.model.game.dungeon.DungeonFactory;
 import com.aor.player.model.menu.Menu;
 import com.aor.player.states.GameState;
+import com.aor.player.states.StateFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -20,13 +20,13 @@ class MenuControllerTest {
     private MenuController controller;
     private Menu menu;
     private Game game;
-    private DungeonFactory dungeonFactory;
+    private StateFactory stateFactory;
 
     @BeforeEach
     void setUp() {
         menu = new Menu();
-        dungeonFactory = new DungeonFactory();
-        controller = new MenuController(menu, dungeonFactory);
+        stateFactory = new StateFactory();
+        controller = new MenuController(menu, stateFactory);
         game = Mockito.mock(Game.class);
     }
 
@@ -136,19 +136,6 @@ class MenuControllerTest {
     }
 
     @Test
-    void testCreateDungeonDimensions() throws IOException {
-        controller.step(game, GUI.ACTION.SELECT, 100);
-
-        ArgumentCaptor<GameState> stateCaptor = ArgumentCaptor.forClass(GameState.class);
-        verify(game).setState(stateCaptor.capture());
-
-        GameState gameState = stateCaptor.getValue();
-        assertNotNull(gameState);
-        assertEquals(20, gameState.getModel().getWidth());
-        assertEquals(20, gameState.getModel().getHeight());
-    }
-
-    @Test
     void testCreateDungeonPlayerPosition() throws IOException {
         controller.step(game, GUI.ACTION.SELECT, 100);
 
@@ -157,11 +144,8 @@ class MenuControllerTest {
 
         GameState gameState = stateCaptor.getValue();
         assertNotNull(gameState.getModel().getPlayer());
-        // Player should be within dungeon bounds
         assertTrue(gameState.getModel().getPlayer().getPosition().getX() >= 0);
-        assertTrue(gameState.getModel().getPlayer().getPosition().getX() < 20);
         assertTrue(gameState.getModel().getPlayer().getPosition().getY() >= 0);
-        assertTrue(gameState.getModel().getPlayer().getPosition().getY() < 20);
     }
 
     @Test

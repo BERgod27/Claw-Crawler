@@ -118,6 +118,21 @@ public class Dungeon {
         return false;
     }
 
+    /**
+     * Gets the monster at the specified position
+     * 
+     * @param position Position to check
+     * @return Monster at position, or null if none exists
+     */
+    public Monster getMonsterAt(Position position) {
+        for (Monster monster : getMonsters()) {
+            if (monster.getPosition().equals(position)) {
+                return monster;
+            }
+        }
+        return null;
+    }
+
     public Door getDoorAt(Position position) {
         if (getCurrentRoom() == null)
             return null;

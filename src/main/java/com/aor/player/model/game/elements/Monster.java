@@ -1,7 +1,103 @@
 package com.aor.player.model.game.elements;
 
+/**
+ * Represents a monster enemy in the dungeon.
+ * Monsters have health, attack, and defense stats based on their type.
+ * They can take damage and be defeated in combat.
+ */
 public class Monster extends Element {
-    public Monster(int x, int y) {
+    private final MonsterType type;
+    private final int maxHealth;
+    private int health;
+    private final int attack;
+    private final int defense;
+
+    /**
+     * Creates a monster with stats based on the specified type
+     * 
+     * @param x    X position in dungeon
+     * @param y    Y position in dungeon
+     * @param type Monster type (defines stats)
+     */
+    public Monster(int x, int y, MonsterType type) {
         super(x, y);
+        this.type = type;
+        this.maxHealth = type.getBaseHealth();
+        this.health = this.maxHealth;
+        this.attack = type.getBaseAttack();
+        this.defense = type.getBaseDefense();
+    }
+
+    /**
+     * Gets the monster's type
+     * 
+     * @return Monster type
+     */
+    public MonsterType getType() {
+        return type;
+    }
+
+    /**
+     * Gets the monster's display name
+     * 
+     * @return Display name from type
+     */
+    public String getName() {
+        return type.getDisplayName();
+    }
+
+    /**
+     * Gets current health points
+     * 
+     * @return Current health
+     */
+    public int getHealth() {
+        return health;
+    }
+
+    /**
+     * Gets maximum health points
+     * 
+     * @return Maximum health
+     */
+    public int getMaxHealth() {
+        return maxHealth;
+    }
+
+    /**
+     * Gets attack power
+     * 
+     * @return Attack value
+     */
+    public int getAttack() {
+        return attack;
+    }
+
+    /**
+     * Gets defense rating
+     * 
+     * @return Defense value
+     */
+    public int getDefense() {
+        return defense;
+    }
+
+    /**
+     * Reduces monster health by the specified damage amount.
+     * Health cannot go below 0.
+     * 
+     * @param damage Amount of damage to take
+     */
+    public void takeDamage(int damage) {
+        this.health = Math.max(0, this.health - damage);
+    }
+
+    /**
+     * Checks if the monster is dead (health <= 0)
+     * 
+     * @return true if monster is dead, false otherwise
+     */
+    public boolean isDead() {
+        return health <= 0;
     }
 }

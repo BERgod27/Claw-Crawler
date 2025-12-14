@@ -4,16 +4,19 @@ import com.aor.player.gui.LanternaGUI;
 import com.aor.player.model.menu.Menu;
 import com.aor.player.states.MenuState;
 import com.aor.player.states.State;
+import com.aor.player.states.StateFactory;
 
 import java.io.IOException;
 
 public class Game {
     private final LanternaGUI gui;
+    private final StateFactory stateFactory;
     private State state;
 
     public Game() throws IOException {
         this.gui = new LanternaGUI(77, 38);
-        this.state = new MenuState(new Menu());
+        this.stateFactory = new StateFactory();
+        this.state = new MenuState(new Menu(), stateFactory);
     }
 
     public static void main(String[] args) throws IOException {

@@ -121,4 +121,34 @@ public class Player extends Element {
     public Sword getEquippedSword() {
         return equippedSword;
     }
+
+    /**
+     * Gets the maximum health value
+     * 
+     * @return Maximum health points
+     */
+    public int getMaxHealth() {
+        return MAX_HEALTH;
+    }
+
+    /**
+     * Reduces player health by damage amount, accounting for armor.
+     * Actual damage is calculated as: max(1, damage - armor)
+     * Health cannot go below 0.
+     * 
+     * @param damage Raw damage before armor reduction
+     */
+    public void takeDamage(int damage) {
+        int actualDamage = Math.max(1, damage - getArmor());
+        this.health = Math.max(0, this.health - actualDamage);
+    }
+
+    /**
+     * Checks if the player is dead (health <= 0)
+     * 
+     * @return true if player is dead, false otherwise
+     */
+    public boolean isDead() {
+        return health <= 0;
+    }
 }

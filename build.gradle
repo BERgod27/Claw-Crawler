@@ -8,7 +8,7 @@ application {
     mainClass = 'com.aor.player.Game'
 }
 
-group = 'com.TheGhostPixel.hero'
+group = 'com.aor.player.hero'
 version = '1.0-SNAPSHOT'
 
 repositories {
