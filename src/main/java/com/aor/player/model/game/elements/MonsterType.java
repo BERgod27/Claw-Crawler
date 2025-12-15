@@ -10,31 +10,32 @@ public enum MonsterType {
      * Common slime - weakest enemy
      * A basic slime creature found throughout the dungeon
      */
-    SLIME("Slime", 20, 5, 2, "sprites/characters/Slime.png"),
+    SLIME("Slime", 20, 5, 2, "sprites/characters/Slime.png", 500),
 
     /**
      * First boss - Troll King
      * A massive troll with high health and defense
      */
-    BOSS_TROLL_KING("Troll King", 50, 12, 5, "sprites/characters/Troll.png"),
+    BOSS_TROLL_KING("Troll King", 50, 12, 5, "sprites/characters/Troll.png", 1000),
 
     /**
      * Second boss - Vampire Lord
      * A cunning vampire with balanced stats and life-stealing abilities
      */
-    BOSS_VAMPIRE_LORD("Vampire Lord", 80, 18, 8, "sprites/characters/Vampire.png"),
+    BOSS_VAMPIRE_LORD("Vampire Lord", 80, 18, 8, "sprites/characters/Vampire.png", 800),
 
     /**
      * Final boss - Demon King
      * The ultimate evil with devastating power
      */
-    BOSS_DEMON_KING("Demon King", 120, 25, 12, "sprites/characters/Devil.png");
+    BOSS_DEMON_KING("Demon King", 120, 25, 12, "sprites/characters/Devil.png", 1200);
 
     private final String displayName;
     private final int baseHealth;
     private final int baseAttack;
     private final int baseDefense;
     private final String spritePath;
+    private final int moveDelay;
 
     /**
      * Constructor for MonsterType enum
@@ -44,13 +45,15 @@ public enum MonsterType {
      * @param baseAttack  Attack power
      * @param baseDefense Defense rating
      * @param spritePath  Path to sprite resource file
+     * @param moveDelay   Milliseconds between movements
      */
-    MonsterType(String displayName, int baseHealth, int baseAttack, int baseDefense, String spritePath) {
+    MonsterType(String displayName, int baseHealth, int baseAttack, int baseDefense, String spritePath, int moveDelay) {
         this.displayName = displayName;
         this.baseHealth = baseHealth;
         this.baseAttack = baseAttack;
         this.baseDefense = baseDefense;
         this.spritePath = spritePath;
+        this.moveDelay = moveDelay;
     }
 
     /**
@@ -106,5 +109,14 @@ public enum MonsterType {
      */
     public boolean isBoss() {
         return this.name().startsWith("BOSS_");
+    }
+
+    /**
+     * Gets the movement delay for this monster type
+     * 
+     * @return Milliseconds between movements
+     */
+    public int getMoveDelay() {
+        return moveDelay;
     }
 }

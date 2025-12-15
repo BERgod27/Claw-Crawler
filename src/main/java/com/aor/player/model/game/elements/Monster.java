@@ -11,6 +11,8 @@ public class Monster extends Element {
     private int health;
     private final int attack;
     private final int defense;
+    private long lastMoveTime;
+    private final int moveDelay;
 
     /**
      * Creates a monster with stats based on the specified type
@@ -26,6 +28,8 @@ public class Monster extends Element {
         this.health = this.maxHealth;
         this.attack = type.getBaseAttack();
         this.defense = type.getBaseDefense();
+        this.moveDelay = type.getMoveDelay();
+        this.lastMoveTime = 0;
     }
 
     /**
@@ -119,5 +123,32 @@ public class Monster extends Element {
     public int getSpriteHeight() {
         com.aor.player.model.Sprite sprite = com.aor.player.viewer.game.MonsterViewer.getSpriteForType(type);
         return sprite != null ? sprite.getHeight() : 1;
+    }
+
+    /**
+     * Gets the last time this monster moved
+     * 
+     * @return Timestamp of last movement
+     */
+    public long getLastMoveTime() {
+        return lastMoveTime;
+    }
+
+    /**
+     * Sets the last move time for this monster
+     * 
+     * @param lastMoveTime Timestamp to set
+     */
+    public void setLastMoveTime(long lastMoveTime) {
+        this.lastMoveTime = lastMoveTime;
+    }
+
+    /**
+     * Gets the delay between movements in milliseconds
+     * 
+     * @return Movement delay
+     */
+    public int getMoveDelay() {
+        return moveDelay;
     }
 }

@@ -223,4 +223,51 @@ public class Dungeon {
     public boolean isDemonRoomUnlocked() {
         return defeatedBosses.size() >= 2;
     }
+
+    /**
+     * Checks if a monster can move to the specified position
+     * Validates against bounds, walls, and other monsters
+     * 
+     * @param monster     The monster attempting to move
+     * @param newPosition The target position
+     * @return true if the move is valid
+     */
+    public boolean canMonsterMoveTo(Monster monster, Position newPosition) {
+        // Check bounds
+        if (newPosition.getX() < 0 || newPosition.getY() < 0)
+            return false;
+        if (newPosition.getX() + monster.getSpriteWidth() > width)
+            return false;
+        if (newPosition.getY() + monster.getSpriteHeight() > height)
+            return false;
+
+        // Check all cells the monster sprite would occupy
+        for (int dy = 0; dy < monster.getSpriteHeight(); dy++) {
+            for (int dx = 0; dx < monster.getSpriteWidth(); dx++) {
+                Position checkPos = new Position(newPosition.getX() + dx, newPosition.getY() + dy);
+
+                // Check walls
+                if (!isEmpty(checkPos))
+                    return false;
+
+                // Check collision with other monsters
+                for (Monster other : getMonsters()) {
+                    if (other == monster)
+                        continue; // Skip self
+
+                    int otherX = other.getPosition().getX();
+                    int otherY = other.getPosition().getY();
+                    int otherWidth = other.getSpriteWidth();
+                    int otherHeight = other.getSpriteHeight();
+
+                    // Check if checkPos overlaps with other monster
+                    if (checkPos.getX() >= otherX && checkPos.getX() < otherX + otherWidth &&
+                            checkPos.getY() >= otherY && checkPos.getY() < otherY + otherHeight) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
 }

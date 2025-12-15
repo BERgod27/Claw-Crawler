@@ -56,7 +56,11 @@ public class DungeonController extends Controller<Dungeon> {
             Monster monster = pendingMonster;
             pendingMonster = null;
             game.setState(stateFactory.createCombatState(getModel(), monster));
+            return;
         }
+
+        // Update monster positions
+        updateMonsters(time);
     }
 
     public void movePlayerLeft() {
@@ -169,5 +173,49 @@ public class DungeonController extends Controller<Dungeon> {
 
     public boolean isPlayerNearShopKeeper() {
         return getModel().isPlayerNearShopKeeper();
+    }
+
+    /**
+     * Updates all monsters in the current room
+     * Moves monsters randomly at intervals defined by their type
+     * 
+     * @param time Current game time in milliseconds
+     */
+    private void updateMonsters(long time) {
+        java.util.Random random = new java.util.Random();
+
+        for (Monster monster : getModel().getMonsters()) {
+            // Check if enough time has passed since last move
+            if (time - monster.getLastMoveTime() < monster.getMoveDelay())
+                continue;
+
+            // Random direction: 0=up, 1=right, 2=down, 3=left
+            int direction = random.nextInt(4);
+            Position currentPos = monster.getPosition();
+            Position newPos = currentPos;
+
+            switch (direction) {
+                case 0: // Up
+                    newPos = currentPos.getUp();
+                    break;
+                case 1: // Right
+                    newPos = currentPos.getRight();
+                    break;
+                case 2: // Down
+                    newPos = currentPos.getDown();
+                    break;
+                case 3: // Left
+                    newPos = currentPos.getLeft();
+                    break;
+            }
+
+            // Validate and apply movement
+            if (getModel().canMonsterMoveTo(monster, newPos)) {
+                monster.setPosition(newPos);
+            }
+
+            // Update last move time regardless of whether move succeeded
+            monster.setLastMoveTime(time);
+        }
     }
 }
