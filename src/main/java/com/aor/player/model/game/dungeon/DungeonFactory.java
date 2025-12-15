@@ -32,6 +32,7 @@ public class DungeonFactory {
         Room mainRoom = createRoom("main");
         Room eastRoom = createRoom("east");
         Room westRoom = createRoom("west");
+        Room demonRoom = createRoom("demon");
 
         // Add shopkeeper to main room (top-right corner)
         mainRoom.setShopKeeper(new ShopKeeper(DUNGEON_WIDTH - 10, 5));
@@ -40,17 +41,29 @@ public class DungeonFactory {
         addMonstersToMainRoom(mainRoom);
         addMonstersToEastRoom(eastRoom);
         addMonstersToWestRoom(westRoom);
+        addMonstersToDemonRoom(demonRoom);
 
-        // Calculate door position (centered vertically)
+        // Add chests to rooms
+        addChestsToMainRoom(mainRoom);
+        addChestsToEastRoom(eastRoom);
+        addChestsToWestRoom(westRoom);
+        addChestsToDemonRoom(demonRoom);
+
+        // Calculate door position (centered vertically for side doors, horizontally for
+        // top door)
         int doorCenterY = DUNGEON_HEIGHT / 2;
         int doorStartY = doorCenterY - (DOOR_HEIGHT / 2);
+        int doorCenterX = DUNGEON_WIDTH / 2;
+        int doorStartX = doorCenterX - (DOOR_HEIGHT / 2);
 
         // Add doorways to connect rooms
-        // Main room: right door to east, left door to west
+        // Main room: right door to east, left door to west, top door to demon
         createDoorway(mainRoom, DUNGEON_WIDTH - 1, doorStartY, "east",
                 new Position(2, doorStartY));
         createDoorway(mainRoom, 0, doorStartY, "west",
                 new Position(DUNGEON_WIDTH - 9, doorStartY));
+        createHorizontalDoorway(mainRoom, doorStartX, 0, "demon",
+                new Position(doorStartX, DUNGEON_HEIGHT - 11));
 
         // East room: left door back to main
         createDoorway(eastRoom, 0, doorStartY, "main",
@@ -60,10 +73,15 @@ public class DungeonFactory {
         createDoorway(westRoom, DUNGEON_WIDTH - 1, doorStartY, "main",
                 new Position(2, doorStartY));
 
+        // Demon room: bottom door back to main
+        createHorizontalDoorway(demonRoom, doorStartX, DUNGEON_HEIGHT - 1, "main",
+                new Position(doorStartX, 11));
+
         // Add rooms to dungeon
         dungeon.addRoom(mainRoom);
         dungeon.addRoom(eastRoom);
         dungeon.addRoom(westRoom);
+        dungeon.addRoom(demonRoom);
 
         // Set starting room
         dungeon.setCurrentRoomId("main");
@@ -85,11 +103,43 @@ public class DungeonFactory {
     private void addMonstersToEastRoom(Room room) {
         room.addMonster(com.aor.player.model.game.elements.MonsterFactory.createTrollKing(DUNGEON_WIDTH / 2,
                 DUNGEON_HEIGHT / 2));
+        // Add slimes around the boss
+        room.addMonster(com.aor.player.model.game.elements.MonsterFactory.createSlime(15, 10));
+        room.addMonster(com.aor.player.model.game.elements.MonsterFactory.createSlime(DUNGEON_WIDTH - 20, 15));
+        room.addMonster(com.aor.player.model.game.elements.MonsterFactory.createSlime(20, DUNGEON_HEIGHT - 10));
     }
 
     private void addMonstersToWestRoom(Room room) {
         room.addMonster(com.aor.player.model.game.elements.MonsterFactory.createVampireLord(DUNGEON_WIDTH / 2,
                 DUNGEON_HEIGHT / 2));
+        // Add slimes around the boss
+        room.addMonster(com.aor.player.model.game.elements.MonsterFactory.createSlime(25, 12));
+        room.addMonster(com.aor.player.model.game.elements.MonsterFactory.createSlime(DUNGEON_WIDTH - 25, 18));
+        room.addMonster(com.aor.player.model.game.elements.MonsterFactory.createSlime(30, DUNGEON_HEIGHT - 12));
+    }
+
+    private void addChestsToMainRoom(Room room) {
+        room.addChest(new com.aor.player.model.game.elements.Chest(new Position(10, 10)));
+        room.addChest(new com.aor.player.model.game.elements.Chest(new Position(DUNGEON_WIDTH - 15, 25)));
+    }
+
+    private void addChestsToEastRoom(Room room) {
+        room.addChest(new com.aor.player.model.game.elements.Chest(new Position(15, 15)));
+        room.addChest(new com.aor.player.model.game.elements.Chest(new Position(DUNGEON_WIDTH - 20, 20)));
+    }
+
+    private void addChestsToWestRoom(Room room) {
+        room.addChest(new com.aor.player.model.game.elements.Chest(new Position(20, 10)));
+    }
+
+    private void addMonstersToDemonRoom(Room room) {
+        // Place Demon King at the top of the room (far from entrance at bottom)
+        room.addMonster(com.aor.player.model.game.elements.MonsterFactory.createDemonKing(DUNGEON_WIDTH / 2, 8));
+    }
+
+    private void addChestsToDemonRoom(Room room) {
+        room.addChest(new com.aor.player.model.game.elements.Chest(new Position(DUNGEON_WIDTH / 2 - 10, 10)));
+        room.addChest(new com.aor.player.model.game.elements.Chest(new Position(DUNGEON_WIDTH / 2 + 10, 10)));
     }
 
     /**

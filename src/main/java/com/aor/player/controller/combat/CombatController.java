@@ -102,26 +102,15 @@ public class CombatController extends Controller<Dungeon> {
         }
     }
 
-    /**
-     * Player attacks the monster
-     * 
-     * @param player The player
-     */
     private void performAttack(Player player) {
         int damage = Math.max(1, player.getAttack() - monster.getDefense());
         monster.takeDamage(damage);
         addLogEntry("You hit " + monster.getName() + " for " + damage + " damage!");
     }
 
-    /**
-     * Monster's turn to attack
-     * 
-     * @param player The player
-     */
     private void monsterTurn(Player player) {
         int damage = Math.max(1, monster.getAttack() - player.getArmor());
 
-        // Reduce damage if defending
         if (isDefending) {
             damage = Math.max(1, damage / 2);
             isDefending = false;
@@ -132,13 +121,7 @@ public class CombatController extends Controller<Dungeon> {
         addLogEntry(monster.getName() + " deals " + damage + " damage!");
     }
 
-    /**
-     * Player uses an item from inventory
-     * 
-     * @param player The player
-     */
     private void useItem(Player player) {
-        // Find first usable item (health potion)
         for (Item item : player.getInventory()) {
             if (item instanceof Usable) {
                 Usable usable = (Usable) item;
@@ -150,42 +133,23 @@ public class CombatController extends Controller<Dungeon> {
         addLogEntry("No usable items in inventory!");
     }
 
-    /**
-     * Player flees from combat
-     * 
-     * @param game The game instance
-     */
     private void flee(Game game) {
         addLogEntry("You fled from combat!");
         game.setState(stateFactory.createGameState(getModel()));
     }
-
-    /**
-     * Player wins the combat
-     * 
-     * @param game The game instance
-     */
+    
     private void victory(Game game) {
         addLogEntry("Victory! " + monster.getName() + " defeated!");
         getModel().removeMonster(monster);
         game.setState(stateFactory.createGameState(getModel()));
     }
 
-    /**
-     * Player loses the combat
-     * 
-     * @param game The game instance
-     */
     private void defeat(Game game) {
         addLogEntry("You have been defeated...");
         game.setState(stateFactory.createMenuState());
     }
 
-    /**
-     * Adds an entry to the combat log, maintaining max size
-     * 
-     * @param message Message to add
-     */
+
     private void addLogEntry(String message) {
         combatLog.add(message);
         if (combatLog.size() > MAX_LOG_ENTRIES) {
@@ -193,29 +157,17 @@ public class CombatController extends Controller<Dungeon> {
         }
     }
 
-    /**
-     * Gets the currently selected action index
-     * 
-     * @return Selected action (0-3)
-     */
+
     public int getSelectedAction() {
         return selectedAction;
     }
 
-    /**
-     * Gets the combat log messages
-     * 
-     * @return List of combat log entries
-     */
+
     public List<String> getCombatLog() {
         return new ArrayList<>(combatLog);
     }
 
-    /**
-     * Gets the monster being fought
-     * 
-     * @return The monster
-     */
+
     public Monster getMonster() {
         return monster;
     }

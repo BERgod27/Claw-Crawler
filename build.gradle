@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'application'
     id 'jacoco'
+    id 'info.solidsoft.pitest' version '1.15.0'
 }
 
 application {
@@ -35,4 +36,15 @@ jacocoTestReport {
         xml.required = true
         html.required = true
     }
+}
+
+pitest {
+    targetClasses = ['com.aor.player.*']
+    targetTests = ['com.aor.player.*']
+    pitestVersion = '1.15.3'
+    threads = 4
+    outputFormats = ['HTML', 'XML']
+    timestampedReports = false
+    mutators = ['DEFAULTS']
+    timeoutFactor = 2.0
 }

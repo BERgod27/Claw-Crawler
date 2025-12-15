@@ -40,6 +40,12 @@ public class ShopController extends Controller<Shop> {
                 // Return to game using factory
                 game.setState(stateFactory.createGameState(dungeon));
                 break;
+            case LEFT:
+            case RIGHT:
+            case NONE:
+            case INVENTORY:
+                // No action for these keys in shop
+                break;
         }
     }
 

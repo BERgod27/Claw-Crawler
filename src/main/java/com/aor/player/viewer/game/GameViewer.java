@@ -19,6 +19,9 @@ public class GameViewer extends Viewer<Dungeon> {
         drawElements(gui, getModel().getMonsters(), new MonsterViewer());
         drawElements(gui, getModel().getDoors(), new DoorViewer());
 
+        // Draw chests
+        drawChests(gui, getModel().getChests());
+
         // Draw shopkeeper if present in current room
         if (getModel().getCurrentRoom() != null && getModel().getCurrentRoom().getShopKeeper() != null) {
             new ShopKeeperViewer().draw(getModel().getCurrentRoom().getShopKeeper(), gui);
@@ -33,6 +36,13 @@ public class GameViewer extends Viewer<Dungeon> {
                 getModel().getPlayer().getArmor(),
                 getModel().getPlayer().getSpeed());
         gui.drawText(new Position(2, 36), stats, "#FFD700");
+    }
+
+    private void drawChests(GUI gui, java.util.List<com.aor.player.model.game.elements.Chest> chests) {
+        ChestViewer chestViewer = new ChestViewer();
+        for (com.aor.player.model.game.elements.Chest chest : chests) {
+            chestViewer.draw(chest, gui);
+        }
     }
 
     private <T extends Element> void drawElements(GUI gui, List<T> elements, ElementViewer<T> viewer) {

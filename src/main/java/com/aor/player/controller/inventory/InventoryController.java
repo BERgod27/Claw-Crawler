@@ -39,6 +39,11 @@ public class InventoryController extends Controller<Dungeon> {
                 // Close inventory and return to game using factory
                 game.setState(stateFactory.createGameState(getModel()));
                 break;
+            case LEFT:
+            case RIGHT:
+            case NONE:
+                // No action for these keys in inventory
+                break;
         }
     }
 

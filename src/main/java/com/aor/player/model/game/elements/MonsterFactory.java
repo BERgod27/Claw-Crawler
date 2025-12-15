@@ -2,8 +2,6 @@ package com.aor.player.model.game.elements;
 
 /**
  * Factory class for creating Monster instances.
- * Follows the Factory Pattern to encapsulate monster creation logic
- * and ensure consistent initialization based on MonsterType.
  */
 public class MonsterFactory {
 

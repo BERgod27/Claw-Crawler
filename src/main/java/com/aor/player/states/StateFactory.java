@@ -1,6 +1,7 @@
 package com.aor.player.states;
 
 import com.aor.player.model.game.dungeon.Dungeon;
+import com.aor.player.model.game.elements.Monster;
 import com.aor.player.model.game.shop.Shop;
 
 public class StateFactory {
@@ -18,14 +19,7 @@ public class StateFactory {
         return new GameState(dungeon, this);
     }
 
-    /**
-     * Creates a combat state for fighting a monster
-     * 
-     * @param dungeon The game dungeon
-     * @param monster The monster to fight
-     * @return New combat state
-     */
-    public CombatState createCombatState(Dungeon dungeon, com.aor.player.model.game.elements.Monster monster) {
+    public CombatState createCombatState(Dungeon dungeon, Monster monster) {
         return new CombatState(dungeon, monster, this);
     }
 

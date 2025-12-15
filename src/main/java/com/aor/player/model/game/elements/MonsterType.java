@@ -97,4 +97,14 @@ public enum MonsterType {
     public String getSpritePath() {
         return spritePath;
     }
+
+    /**
+     * Checks if this monster type is a boss
+     * Boss types have names starting with "BOSS_"
+     * 
+     * @return true if this is a boss monster type
+     */
+    public boolean isBoss() {
+        return this.name().startsWith("BOSS_");
+    }
 }

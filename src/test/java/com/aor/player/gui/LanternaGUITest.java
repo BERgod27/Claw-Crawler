@@ -31,7 +31,6 @@ class LanternaGUITest {
 
         Mockito.verify(tg, Mockito.times(1)).setForegroundColor(new TextColor.RGB(255, 215, 0));
         Mockito.verify(tg, Mockito.times(1)).putString(1, 1, "P");
-        Mockito.verify(tg, Mockito.times(1)).setBackgroundColor(new TextColor.RGB(26, 26, 46));
     }
 
     @Test

@@ -5,16 +5,14 @@ import com.aor.player.controller.game.DungeonController;
 import com.aor.player.gui.GUI;
 import com.aor.player.model.Position;
 import com.aor.player.model.game.dungeon.Dungeon;
+import com.aor.player.model.game.dungeon.Room;
 import com.aor.player.model.game.elements.Player;
-import com.aor.player.model.game.elements.Wall;
 import com.aor.player.states.StateFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -31,6 +29,13 @@ class DungeonControllerTest {
         dungeon = new Dungeon(100, 100);
         player = new Player(50, 50);
         dungeon.setPlayer(player);
+
+        // Create and add a room to prevent NullPointerException in
+        // checkChestInteraction
+        Room room = new Room("test_room");
+        dungeon.addRoom(room);
+        dungeon.setCurrentRoomId("test_room");
+
         stateFactory = Mockito.mock(StateFactory.class);
         controller = new DungeonController(dungeon, stateFactory);
         game = Mockito.mock(Game.class);

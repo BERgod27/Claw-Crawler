@@ -17,8 +17,8 @@ public class Shop {
     private void initializeInventory() {
         // Add items to shop inventory
         inventory.add(new HealthPotion());
-        inventory.add(new Armor());
-        inventory.add(new Sword());
+        inventory.add(new Armor("Iron Armor", 15));
+        inventory.add(new Sword("Steel Sword", 10));
     }
 
     public List<Item> getAvailableItems() {

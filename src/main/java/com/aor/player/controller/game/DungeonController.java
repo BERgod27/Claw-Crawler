@@ -84,6 +84,11 @@ public class DungeonController extends Controller<Dungeon> {
         // Check for door collision BEFORE moving
         Door door = checkDoorAtPosition(newPosition);
         if (door != null) {
+            // Check if this is the demon room door and if it's unlocked
+            if (door.getTargetRoomId().equals("demon") && !getModel().isDemonRoomUnlocked()) {
+                // Door is locked, do nothing (could add a message here later)
+                return;
+            }
             // Transition to the target room
             getModel().changeRoom(door.getTargetRoomId(), door.getSpawnPosition());
             return;

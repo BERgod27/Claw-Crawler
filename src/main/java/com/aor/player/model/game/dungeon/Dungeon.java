@@ -1,14 +1,18 @@
 package com.aor.player.model.game.dungeon;
 
 import com.aor.player.model.Position;
+import com.aor.player.model.game.elements.Chest;
 import com.aor.player.model.game.elements.Door;
 import com.aor.player.model.game.elements.Monster;
+import com.aor.player.model.game.elements.MonsterType;
 import com.aor.player.model.game.elements.Player;
 import com.aor.player.model.game.elements.Wall;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class Dungeon {
     private final int width;
@@ -17,11 +21,13 @@ public class Dungeon {
     private Player player;
     private Map<String, Room> rooms;
     private String currentRoomId;
+    private Set<MonsterType> defeatedBosses;
 
     public Dungeon(int width, int height) {
         this.width = width;
         this.height = height;
         this.rooms = new HashMap<>();
+        this.defeatedBosses = new HashSet<>();
     }
 
     public int getWidth() {
@@ -68,6 +74,10 @@ public class Dungeon {
         return getCurrentRoom() != null ? getCurrentRoom().getDoors() : List.of();
     }
 
+    public List<Chest> getChests() {
+        return getCurrentRoom() != null ? getCurrentRoom().getChests() : List.of();
+    }
+
     public void addMonster(Monster monster) {
         if (getCurrentRoom() != null) {
             getCurrentRoom().addMonster(monster);
@@ -77,6 +87,10 @@ public class Dungeon {
     public void removeMonster(Monster monster) {
         if (getCurrentRoom() != null) {
             getCurrentRoom().removeMonster(monster);
+            // Track boss defeats for unlocking demon room
+            if (monster.getType().isBoss()) {
+                defeatedBosses.add(monster.getType());
+            }
         }
     }
 
@@ -190,5 +204,23 @@ public class Dungeon {
             }
         }
         return false;
+    }
+
+    /**
+     * Gets the number of bosses that have been defeated
+     * 
+     * @return Count of defeated bosses
+     */
+    public int getDefeatedBossCount() {
+        return defeatedBosses.size();
+    }
+
+    /**
+     * Checks if demon room should be unlocked (2+ bosses defeated)
+     * 
+     * @return true if at least 2 bosses have been defeated
+     */
+    public boolean isDemonRoomUnlocked() {
+        return defeatedBosses.size() >= 2;
     }
 }
