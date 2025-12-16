@@ -16,19 +16,19 @@ public enum MonsterType {
      * First boss - Troll King
      * A massive troll with high health and defense
      */
-    BOSS_TROLL_KING("Troll King", 50, 12, 5, "sprites/characters/Troll.png", 1000),
+    BOSS_TROLL_KING("Troll King", 100, 10, 10, "sprites/characters/Troll.png", 1000),
 
     /**
      * Second boss - Vampire Lord
      * A cunning vampire with balanced stats and life-stealing abilities
      */
-    BOSS_VAMPIRE_LORD("Vampire Lord", 80, 18, 8, "sprites/characters/Vampire.png", 800),
+    BOSS_VAMPIRE_LORD("Vampire Lord", 175, 18, 15, "sprites/characters/Vampire.png", 800),
 
     /**
      * Final boss - Demon King
      * The ultimate evil with devastating power
      */
-    BOSS_DEMON_KING("Demon King", 120, 25, 12, "sprites/characters/Devil.png", 1200);
+    BOSS_DEMON_KING("Demon King", 250, 25, 20, "sprites/characters/Devil.png", 1200);
 
     private final String displayName;
     private final int baseHealth;
