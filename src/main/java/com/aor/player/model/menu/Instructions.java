@@ -19,7 +19,7 @@ public class Instructions {
                 "  Q - Quit Game",
                 "  Enter - Select Menu Option",
                 "",
-                "Press any key to return to menu..."
+                "Press Q to return to menu..."
         };
     }
 
