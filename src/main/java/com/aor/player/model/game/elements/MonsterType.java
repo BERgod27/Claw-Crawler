@@ -10,25 +10,25 @@ public enum MonsterType {
      * Common slime - weakest enemy
      * A basic slime creature found throughout the dungeon
      */
-    SLIME("Slime", 20, 5, 2, "sprites/characters/Slime.png", 500),
+    SLIME("Slime", 20, 5, 2, "sprites/characters/Slime.png", 500, 20),
 
     /**
      * First boss - Troll King
      * A massive troll with high health and defense
      */
-    BOSS_TROLL_KING("Troll King", 100, 10, 10, "sprites/characters/Troll.png", 1000),
+    BOSS_TROLL_KING("Troll King", 200, 10, 30, "sprites/characters/Troll.png", 1000, 50),
 
     /**
      * Second boss - Vampire Lord
      * A cunning vampire with balanced stats and life-stealing abilities
      */
-    BOSS_VAMPIRE_LORD("Vampire Lord", 175, 18, 15, "sprites/characters/Vampire.png", 800),
+    BOSS_VAMPIRE_LORD("Vampire Lord", 275, 25, 10, "sprites/characters/Vampire.png", 800, 75),
 
     /**
      * Final boss - Demon King
      * The ultimate evil with devastating power
      */
-    BOSS_DEMON_KING("Demon King", 250, 25, 20, "sprites/characters/Devil.png", 1200);
+    BOSS_DEMON_KING("Demon King", 400, 40, 40, "sprites/characters/Devil.png", 1200, 100);
 
     private final String displayName;
     private final int baseHealth;
@@ -36,6 +36,7 @@ public enum MonsterType {
     private final int baseDefense;
     private final String spritePath;
     private final int moveDelay;
+    private final int goldReward;
 
     /**
      * Constructor for MonsterType enum
@@ -46,14 +47,17 @@ public enum MonsterType {
      * @param baseDefense Defense rating
      * @param spritePath  Path to sprite resource file
      * @param moveDelay   Milliseconds between movements
+     * @param goldReward  Gold coins dropped when defeated
      */
-    MonsterType(String displayName, int baseHealth, int baseAttack, int baseDefense, String spritePath, int moveDelay) {
+    MonsterType(String displayName, int baseHealth, int baseAttack, int baseDefense, String spritePath, int moveDelay,
+            int goldReward) {
         this.displayName = displayName;
         this.baseHealth = baseHealth;
         this.baseAttack = baseAttack;
         this.baseDefense = baseDefense;
         this.spritePath = spritePath;
         this.moveDelay = moveDelay;
+        this.goldReward = goldReward;
     }
 
     /**
@@ -118,5 +122,14 @@ public enum MonsterType {
      */
     public int getMoveDelay() {
         return moveDelay;
+    }
+
+    /**
+     * Gets the gold reward for defeating this monster type
+     * 
+     * @return Gold coins dropped when defeated
+     */
+    public int getGoldReward() {
+        return goldReward;
     }
 }

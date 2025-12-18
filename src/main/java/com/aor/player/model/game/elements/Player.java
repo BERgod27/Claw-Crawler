@@ -8,18 +8,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Player extends Element {
-    private static final int DEFAULT_SPEED = 10;
     private static final int DEFAULT_ARMOR = 10;
     private static final int DEFAULT_ATTACK = 10;
     private static final int DEFAULT_HEALTH = 100;
-    private static final int MAX_HEALTH = 100;
-    private static final int DEFAULT_GOLD = 100;
+    private static final int INITIAL_MAX_HEALTH = 100;
+    private static final int DEFAULT_GOLD = 10000;
     private static final int SPRITE_WIDTH = 7;
     private static final int SPRITE_HEIGHT = 7;
 
-    private int speed;
     private int baseArmor;
     private int health;
+    private int maxHealth;
     private int gold;
     private int attack;
 
@@ -29,9 +28,9 @@ public class Player extends Element {
 
     public Player(int x, int y) {
         super(x, y);
-        this.speed = DEFAULT_SPEED;
         this.baseArmor = DEFAULT_ARMOR;
         this.health = DEFAULT_HEALTH;
+        this.maxHealth = INITIAL_MAX_HEALTH;
         this.gold = DEFAULT_GOLD;
         this.attack = DEFAULT_ATTACK;
         this.inventory = new ArrayList<>();
@@ -49,10 +48,6 @@ public class Player extends Element {
 
     public int getHealth() {
         return health;
-    }
-
-    public int getSpeed() {
-        return speed;
     }
 
     public int getSpriteWidth() {
@@ -88,7 +83,7 @@ public class Player extends Element {
     }
 
     public void heal(int amount) {
-        health = Math.min(health + amount, MAX_HEALTH);
+        health = Math.min(health + amount, maxHealth);
     }
 
     public void equipArmor(Armor armor) {
@@ -129,7 +124,34 @@ public class Player extends Element {
      * @return Maximum health points
      */
     public int getMaxHealth() {
-        return MAX_HEALTH;
+        return maxHealth;
+    }
+
+    /**
+     * Increases the player's maximum health
+     * 
+     * @param amount Amount to increase max health by
+     */
+    public void increaseMaxHealth(int amount) {
+        this.maxHealth += amount;
+    }
+
+    /**
+     * Increases the player's base attack
+     * 
+     * @param amount Amount to increase attack by
+     */
+    public void increaseAttack(int amount) {
+        this.attack += amount;
+    }
+
+    /**
+     * Increases the player's base armor
+     * 
+     * @param amount Amount to increase armor by
+     */
+    public void increaseBaseArmor(int amount) {
+        this.baseArmor += amount;
     }
 
     /**
@@ -145,11 +167,33 @@ public class Player extends Element {
     }
 
     /**
+     * Directly reduces player health by the specified amount.
+     * Use this when damage has already been calculated with armor reduction.
+     * Health cannot go below 0.
+     * 
+     * @param damage Final damage amount (after armor has been applied)
+     */
+    public void reduceHealth(int damage) {
+        this.health = Math.max(0, this.health - damage);
+    }
+
+    /**
      * Checks if the player is dead (health <= 0)
      * 
      * @return true if player is dead, false otherwise
      */
     public boolean isDead() {
         return health <= 0;
+    }
+
+    /**
+     * Removes an item from the inventory at the specified index
+     * 
+     * @param index Index of item to remove
+     */
+    public void removeItem(int index) {
+        if (index >= 0 && index < inventory.size()) {
+            inventory.remove(index);
+        }
     }
 }

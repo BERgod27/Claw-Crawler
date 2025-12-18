@@ -6,7 +6,9 @@ import com.aor.player.model.game.elements.Door;
 import com.aor.player.model.game.elements.Monster;
 import com.aor.player.model.game.elements.MonsterType;
 import com.aor.player.model.game.elements.Player;
+import com.aor.player.model.game.elements.ShopKeeper;
 import com.aor.player.model.game.elements.Wall;
+import com.aor.player.model.game.shop.Shop;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -22,12 +24,18 @@ public class Dungeon {
     private Map<String, Room> rooms;
     private String currentRoomId;
     private Set<MonsterType> defeatedBosses;
+    private final Shop shop; // Persistent shop instance
+    private final long gameStartTime; // Track when game started
+    private int slimesKilled; // Track slimes killed
 
     public Dungeon(int width, int height) {
         this.width = width;
         this.height = height;
         this.rooms = new HashMap<>();
         this.defeatedBosses = new HashSet<>();
+        this.shop = new Shop(); // Initialize shop once
+        this.gameStartTime = System.currentTimeMillis();
+        this.slimesKilled = 0;
     }
 
     public int getWidth() {
@@ -40,6 +48,10 @@ public class Dungeon {
 
     public Player getPlayer() {
         return player;
+    }
+
+    public Shop getShop() {
+        return shop;
     }
 
     public void setPlayer(Player player) {
@@ -90,6 +102,10 @@ public class Dungeon {
             // Track boss defeats for unlocking demon room
             if (monster.getType().isBoss()) {
                 defeatedBosses.add(monster.getType());
+            }
+            // Track slime kills
+            if (monster.getType() == MonsterType.SLIME) {
+                slimesKilled++;
             }
         }
     }
@@ -178,6 +194,12 @@ public class Dungeon {
     public void changeRoom(String targetRoomId, Position spawnPosition) {
         this.currentRoomId = targetRoomId;
         this.player.setPosition(spawnPosition);
+
+        // Respawn slimes in the new room
+        Room targetRoom = rooms.get(targetRoomId);
+        if (targetRoom != null) {
+            targetRoom.respawnSlimes();
+        }
     }
 
     public void movePlayer(Position newPosition) {
@@ -191,19 +213,66 @@ public class Dungeon {
             return false;
         }
 
-        Position shopKeeperPos = getCurrentRoom().getShopKeeper().getPosition();
+        ShopKeeper shopKeeper = getCurrentRoom().getShopKeeper();
         Position playerPos = player.getPosition();
+        Position shopPos = shopKeeper.getPosition();
 
-        // Check if any part of the player sprite (7x7) overlaps with shopkeeper
-        for (int dy = 0; dy < player.getSpriteHeight(); dy++) {
-            for (int dx = 0; dx < player.getSpriteWidth(); dx++) {
-                Position checkPos = new Position(playerPos.getX() + dx, playerPos.getY() + dy);
-                if (checkPos.equals(shopKeeperPos)) {
-                    return true;
-                }
+        // Check if player is adjacent/touching shop (within 1 pixel or overlapping)
+        int playerX = playerPos.getX();
+        int playerY = playerPos.getY();
+        int playerWidth = player.getSpriteWidth();
+        int playerHeight = player.getSpriteHeight();
+
+        int shopX = shopPos.getX();
+        int shopY = shopPos.getY();
+        int shopWidth = shopKeeper.getSpriteWidth();
+        int shopHeight = shopKeeper.getSpriteHeight();
+
+        // Expand collision box by 1 pixel to detect adjacency
+        boolean nearX = playerX < shopX + shopWidth + 1 && playerX + playerWidth > shopX - 1;
+        boolean nearY = playerY < shopY + shopHeight + 1 && playerY + playerHeight > shopY - 1;
+
+        return nearX && nearY;
+    }
+
+    /**
+     * Gets the chest that the player is currently colliding with or adjacent to
+     * 
+     * @return The chest the player is near, or null if none
+     */
+    public Chest getChestNearPlayer() {
+        if (getCurrentRoom() == null) {
+            return null;
+        }
+
+        Position playerPos = player.getPosition();
+        int playerX = playerPos.getX();
+        int playerY = playerPos.getY();
+        int playerWidth = player.getSpriteWidth();
+        int playerHeight = player.getSpriteHeight();
+
+        // Check all chests in current room
+        for (Chest chest : getCurrentRoom().getChests()) {
+            if (chest.isOpened()) {
+                continue; // Skip already opened chests
+            }
+
+            Position chestPos = chest.getPosition();
+            int chestX = chestPos.getX();
+            int chestY = chestPos.getY();
+            // Assume chest sprite is 7x7 (same as player)
+            int chestWidth = 7;
+            int chestHeight = 7;
+
+            // Expand collision box by 1 pixel to detect adjacency
+            boolean nearX = playerX < chestX + chestWidth + 1 && playerX + playerWidth > chestX - 1;
+            boolean nearY = playerY < chestY + chestHeight + 1 && playerY + playerHeight > chestY - 1;
+
+            if (nearX && nearY) {
+                return chest;
             }
         }
-        return false;
+        return null;
     }
 
     /**
@@ -222,6 +291,37 @@ public class Dungeon {
      */
     public boolean isDemonRoomUnlocked() {
         return defeatedBosses.size() >= 2;
+    }
+
+    /**
+     * Checks if all bosses have been defeated (victory condition)
+     * 
+     * @return true if all 3 bosses are defeated
+     */
+    public boolean areAllBossesDefeated() {
+        return defeatedBosses.size() >= 3;
+    }
+
+    /**
+     * Gets the time elapsed since game start in milliseconds
+     */
+    public long getTimePlayed() {
+        return System.currentTimeMillis() - gameStartTime;
+    }
+
+    /**
+     * Gets the number of slimes killed
+     */
+    public int getSlimesKilled() {
+        return slimesKilled;
+    }
+
+    /**
+     * Gets the total gold farmed (current gold + gold spent)
+     * For simplicity, we'll just return current gold
+     */
+    public int getTotalGold() {
+        return player != null ? player.getGold() : 0;
     }
 
     /**

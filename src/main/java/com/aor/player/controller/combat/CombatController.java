@@ -24,11 +24,15 @@ public class CombatController extends Controller<Dungeon> {
     private final StateFactory stateFactory;
     private int selectedAction = 0;
     private boolean isDefending = false;
+    private boolean combatOver = false;
+    private boolean playerDefeated = false;
+    private boolean allBossesDefeated = false;
     private final List<String> combatLog;
     private static final int MAX_LOG_ENTRIES = 5;
+    private static final int LAST_ACTION_INDEX = 3;
 
     /**
-     * Creates a combat controller
+     * Creates a combat controller\
      * 
      * @param dungeon      The game dungeon
      * @param monster      The monster being fought
@@ -44,12 +48,29 @@ public class CombatController extends Controller<Dungeon> {
 
     @Override
     public void step(Game game, GUI.ACTION action, long time) throws IOException {
+        // If combat is over, wait for Q to close
+        if (combatOver) {
+            if (action == GUI.ACTION.QUIT) {
+                if (allBossesDefeated) {
+                    // All bosses defeated - show victory screen
+                    game.setState(stateFactory.createVictoryState(getModel()));
+                } else if (playerDefeated) {
+                    // Player defeated - return to menu
+                    game.setState(stateFactory.createMenuState());
+                } else {
+                    // Victory - continue game
+                    game.setState(stateFactory.createGameState(getModel()));
+                }
+            }
+            return;
+        }
+
         // Navigate menu
         if (action == GUI.ACTION.UP) {
             selectedAction = Math.max(0, selectedAction - 1);
         }
         if (action == GUI.ACTION.DOWN) {
-            selectedAction = Math.min(3, selectedAction + 1);
+            selectedAction = Math.min(LAST_ACTION_INDEX, selectedAction + 1);
         }
 
         // Execute selected action
@@ -109,6 +130,7 @@ public class CombatController extends Controller<Dungeon> {
     }
 
     private void monsterTurn(Player player) {
+        // Calculate damage after armor reduction
         int damage = Math.max(1, monster.getAttack() - player.getArmor());
 
         if (isDefending) {
@@ -117,7 +139,8 @@ public class CombatController extends Controller<Dungeon> {
             addLogEntry(monster.getName() + " attacks! You block some damage!");
         }
 
-        player.takeDamage(damage);
+        // Directly reduce health (armor already calculated)
+        player.reduceHealth(damage);
         addLogEntry(monster.getName() + " deals " + damage + " damage!");
     }
 
@@ -137,18 +160,34 @@ public class CombatController extends Controller<Dungeon> {
         addLogEntry("You fled from combat!");
         game.setState(stateFactory.createGameState(getModel()));
     }
-    
+
     private void victory(Game game) {
+        int goldReward = monster.getType().getGoldReward();
+        getModel().getPlayer().addGold(goldReward);
+
         addLogEntry("Victory! " + monster.getName() + " defeated!");
+        addLogEntry("You received " + goldReward + " gold!");
+
         getModel().removeMonster(monster);
-        game.setState(stateFactory.createGameState(getModel()));
+
+        // Check if all bosses are defeated
+        if (getModel().areAllBossesDefeated()) {
+            addLogEntry("All bosses defeated! You win!");
+            addLogEntry("Press Q to continue...");
+            combatOver = true;
+            allBossesDefeated = true;
+        } else {
+            addLogEntry("Press Q to continue...");
+            combatOver = true;
+        }
     }
 
     private void defeat(Game game) {
         addLogEntry("You have been defeated...");
-        game.setState(stateFactory.createMenuState());
+        addLogEntry("Press Q to return to menu...");
+        combatOver = true;
+        playerDefeated = true;
     }
-
 
     private void addLogEntry(String message) {
         combatLog.add(message);
@@ -157,16 +196,13 @@ public class CombatController extends Controller<Dungeon> {
         }
     }
 
-
     public int getSelectedAction() {
         return selectedAction;
     }
 
-
     public List<String> getCombatLog() {
         return new ArrayList<>(combatLog);
     }
-
 
     public Monster getMonster() {
         return monster;

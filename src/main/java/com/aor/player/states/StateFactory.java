@@ -2,13 +2,12 @@ package com.aor.player.states;
 
 import com.aor.player.model.game.dungeon.Dungeon;
 import com.aor.player.model.game.elements.Monster;
-import com.aor.player.model.game.shop.Shop;
+import com.aor.player.model.victory.Victory;
 
 public class StateFactory {
 
     public ShopState createShopState(Dungeon dungeon) {
-        Shop shop = new Shop();
-        return new ShopState(shop, dungeon, this);
+        return new ShopState(dungeon.getShop(), dungeon, this);
     }
 
     public InventoryState createInventoryState(Dungeon dungeon) {
@@ -29,5 +28,13 @@ public class StateFactory {
 
     public InstructionsState createInstructionsState() {
         return new InstructionsState(new com.aor.player.model.menu.Instructions(), this);
+    }
+
+    public VictoryState createVictoryState(Dungeon dungeon) {
+        Victory victory = new com.aor.player.model.victory.Victory(
+                dungeon.getTimePlayed(),
+                dungeon.getTotalGold(),
+                dungeon.getSlimesKilled());
+        return new VictoryState(victory, this);
     }
 }

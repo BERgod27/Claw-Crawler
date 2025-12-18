@@ -82,6 +82,11 @@ class DungeonControllerTest {
 
     @Test
     void testStepWithQuitAction() throws IOException {
+        // First Q press sets confirmation flag, doesn't quit yet
+        controller.step(game, GUI.ACTION.QUIT, 100);
+        verify(game, never()).setState(null);
+
+        // Second Q press actually quits
         controller.step(game, GUI.ACTION.QUIT, 100);
         verify(game, times(1)).setState(null);
     }

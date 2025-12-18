@@ -15,6 +15,8 @@ import java.io.IOException;
 public class DungeonController extends Controller<Dungeon> {
     private final StateFactory stateFactory;
     private Monster pendingMonster = null;
+    private final java.util.Random random = new java.util.Random();
+    private boolean quitConfirmation = false;
 
     public DungeonController(Dungeon dungeon, StateFactory stateFactory) {
         super(dungeon);
@@ -23,31 +25,45 @@ public class DungeonController extends Controller<Dungeon> {
 
     @Override
     public void step(Game game, GUI.ACTION action, long time) throws IOException {
-        // Handle movement
+        // Handle movement and actions
         switch (action) {
             case UP:
                 movePlayerUp();
+                quitConfirmation = false; // Cancel quit confirmation on movement
                 break;
             case RIGHT:
                 movePlayerRight();
+                quitConfirmation = false; // Cancel quit confirmation on movement
                 break;
             case DOWN:
                 movePlayerDown();
+                quitConfirmation = false; // Cancel quit confirmation on movement
                 break;
             case LEFT:
                 movePlayerLeft();
+                quitConfirmation = false; // Cancel quit confirmation on movement
                 break;
             case SELECT:
                 checkShopKeeper(game);
                 checkChestInteraction();
+                quitConfirmation = false; // Cancel quit confirmation on action
                 break;
             case INVENTORY:
                 game.setState(stateFactory.createInventoryState(getModel()));
                 return;
             case QUIT:
-                game.setState(null);
+                if (quitConfirmation) {
+                    game.setState(null); // Actually quit
+                } else {
+                    quitConfirmation = true; // Show confirmation
+                }
                 return;
+            case NONE:
+                // Do nothing, don't cancel quit confirmation
+                break;
             default:
+                // Any other action cancels quit confirmation
+                quitConfirmation = false;
                 break;
         }
 
@@ -105,11 +121,18 @@ public class DungeonController extends Controller<Dungeon> {
             return;
         }
 
+        // Check for shop collision - block movement if would overlap
+        if (checkShopAtPosition(newPosition)) {
+            return; // Don't move into shop
+        }
+
+        // Check for chest collision - block movement if would overlap
+        if (checkChestAtPosition(newPosition)) {
+            return; // Don't move into chest
+        }
+
         // No collision, perform normal movement
         getModel().movePlayer(newPosition);
-
-        // Check for chest interaction automatically after moving
-        checkChestInteraction();
     }
 
     private Monster checkMonsterAtPosition(Position position) {
@@ -152,6 +175,61 @@ public class DungeonController extends Controller<Dungeon> {
         return null;
     }
 
+    private boolean checkShopAtPosition(Position position) {
+        // Check if player would overlap with shop at the new position
+        if (getModel().getCurrentRoom() == null || getModel().getCurrentRoom().getShopKeeper() == null) {
+            return false;
+        }
+
+        var shopKeeper = getModel().getCurrentRoom().getShopKeeper();
+        Position shopPos = shopKeeper.getPosition();
+
+        int playerX = position.getX();
+        int playerY = position.getY();
+        int playerWidth = getModel().getPlayer().getSpriteWidth();
+        int playerHeight = getModel().getPlayer().getSpriteHeight();
+
+        int shopX = shopPos.getX();
+        int shopY = shopPos.getY();
+        int shopWidth = shopKeeper.getSpriteWidth();
+        int shopHeight = shopKeeper.getSpriteHeight();
+
+        // AABB collision
+        boolean overlapX = playerX < shopX + shopWidth && playerX + playerWidth > shopX;
+        boolean overlapY = playerY < shopY + shopHeight && playerY + playerHeight > shopY;
+
+        return overlapX && overlapY;
+    }
+
+    private boolean checkChestAtPosition(Position position) {
+        // Check if player would overlap with any chest at the new position
+        if (getModel().getCurrentRoom() == null) {
+            return false;
+        }
+
+        int playerX = position.getX();
+        int playerY = position.getY();
+        int playerWidth = getModel().getPlayer().getSpriteWidth();
+        int playerHeight = getModel().getPlayer().getSpriteHeight();
+
+        for (Chest chest : getModel().getCurrentRoom().getChests()) {
+            Position chestPos = chest.getPosition();
+            int chestX = chestPos.getX();
+            int chestY = chestPos.getY();
+            int chestWidth = 7; // Chest sprite size
+            int chestHeight = 7;
+
+            // AABB collision
+            boolean overlapX = playerX < chestX + chestWidth && playerX + playerWidth > chestX;
+            boolean overlapY = playerY < chestY + chestHeight && playerY + playerHeight > chestY;
+
+            if (overlapX && overlapY) {
+                return true; // Found collision with a chest
+            }
+        }
+        return false;
+    }
+
     private void checkShopKeeper(Game game) {
         if (isPlayerNearShopKeeper()) {
             game.setState(stateFactory.createShopState(getModel()));
@@ -159,15 +237,10 @@ public class DungeonController extends Controller<Dungeon> {
     }
 
     private void checkChestInteraction() {
-        Position playerPos = getModel().getPlayer().getPosition();
-        var currentRoom = getModel().getCurrentRoom();
-
-        // Check all chests in current room
-        for (Chest chest : currentRoom.getChests()) {
-            if (chest.getPosition().equals(playerPos) && !chest.isOpened()) {
-                int gold = chest.open();
-                getModel().getPlayer().addGold(gold);
-            }
+        Chest chest = getModel().getChestNearPlayer();
+        if (chest != null && !chest.isOpened()) {
+            int gold = chest.open();
+            getModel().getPlayer().addGold(gold);
         }
     }
 
@@ -182,8 +255,6 @@ public class DungeonController extends Controller<Dungeon> {
      * @param time Current game time in milliseconds
      */
     private void updateMonsters(long time) {
-        java.util.Random random = new java.util.Random();
-
         for (Monster monster : getModel().getMonsters()) {
             // Check if enough time has passed since last move
             if (time - monster.getLastMoveTime() < monster.getMoveDelay())
@@ -218,4 +289,9 @@ public class DungeonController extends Controller<Dungeon> {
             monster.setLastMoveTime(time);
         }
     }
+
+    public boolean isQuitConfirmation() {
+        return quitConfirmation;
+    }
+
 }

@@ -13,14 +13,16 @@ public class Room {
     private List<Monster> monsters;
     private List<Door> doors;
     private ShopKeeper shopKeeper;
-    private List<Chest> chests; // Keep it private
+    private List<Chest> chests;
+    private final List<Position> initialSlimePositions; // Track where slimes should spawn
 
     public Room(String id) {
         this.id = id;
         this.walls = new ArrayList<>();
         this.monsters = new ArrayList<>();
         this.doors = new ArrayList<>();
-        this.chests = new ArrayList<>(); // Initialize chests here
+        this.chests = new ArrayList<>();
+        this.initialSlimePositions = new ArrayList<>();
     }
 
     public String getId() {
@@ -49,10 +51,61 @@ public class Room {
 
     public void addMonster(Monster monster) {
         this.monsters.add(monster);
+        // Track slimes for respawning
+        if (monster.getType() == MonsterType.SLIME) {
+            initialSlimePositions.add(monster.getPosition());
+        }
     }
 
     public void removeMonster(Monster monster) {
         this.monsters.remove(monster);
+    }
+
+    /**
+     * Respawns all slimes in their initial positions
+     * Called when player re-enters a room
+     */
+    public void respawnSlimes() {
+        // Remove existing dead slimes
+        monsters.removeIf(m -> m.getType() == MonsterType.SLIME && m.isDead());
+
+        // Count how many slimes should exist vs how many are alive
+        int expectedSlimes = initialSlimePositions.size();
+        long aliveSlimes = monsters.stream()
+                .filter(m -> m.getType() == MonsterType.SLIME)
+                .count();
+
+        // Only respawn the missing ones
+        int slimesToSpawn = expectedSlimes - (int) aliveSlimes;
+
+        if (slimesToSpawn > 0) {
+            // Find which positions need slimes spawned
+            int spawned = 0;
+            for (Position slimePos : initialSlimePositions) {
+                if (spawned >= slimesToSpawn)
+                    break;
+
+                // Check if any slime (alive) is already at or near this position
+                boolean occupied = false;
+                for (Monster monster : monsters) {
+                    if (monster.getType() == MonsterType.SLIME) {
+                        // Check if this spawn position is already occupied
+                        int dx = Math.abs(monster.getPosition().getX() - slimePos.getX());
+                        int dy = Math.abs(monster.getPosition().getY() - slimePos.getY());
+                        if (dx < 5 && dy < 5) { // Within 5 units
+                            occupied = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (!occupied) {
+                    monsters.add(com.aor.player.model.game.elements.MonsterFactory.createSlime(
+                            slimePos.getX(), slimePos.getY()));
+                    spawned++;
+                }
+            }
+        }
     }
 
     public List<Door> getDoors() {

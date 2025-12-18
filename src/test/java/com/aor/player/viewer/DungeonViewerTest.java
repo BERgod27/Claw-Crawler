@@ -21,7 +21,8 @@ public class DungeonViewerTest {
     void setUp() {
         dungeon = Mockito.mock(Dungeon.class);
         gui = Mockito.mock(GUI.class);
-        viewer = new GameViewer(dungeon);
+        var controller = Mockito.mock(com.aor.player.controller.game.DungeonController.class);
+        viewer = new GameViewer(dungeon, controller);
 
         // Mock dungeon elements
         Mockito.when(dungeon.getWalls()).thenReturn(Arrays.asList(new Wall(1, 2), new Wall(2, 3)));

@@ -189,25 +189,31 @@ class CombatControllerTest {
         // Execute any action after monster is dead
         controller.step(game, GUI.ACTION.SELECT, 100);
 
+        // Press Q to close combat screen after victory
+        controller.step(game, GUI.ACTION.QUIT, 100);
+
         // Should transition to game state
         verify(game, times(1)).setState(any());
     }
 
     @Test
     void testDefeatCondition() throws IOException {
-        when(stateFactory.createMenuState())
-                .thenReturn(Mockito.mock(com.aor.player.states.MenuState.class));
+        when(stateFactory.createGameState(dungeon))
+                .thenReturn(Mockito.mock(com.aor.player.states.GameState.class));
 
         // Damage player until death
         while (!player.isDead()) {
             player.takeDamage(100);
         }
 
-        // Execute any action after player is dead
+        // Execute any action after player is dead (triggers defeat)
         controller.step(game, GUI.ACTION.SELECT, 100);
 
-        // Should transition to menu state (game over)
-        verify(stateFactory, times(1)).createMenuState();
+        // Now need to press Q to close combat screen
+        controller.step(game, GUI.ACTION.QUIT, 100);
+
+        // Should transition to game state after pressing Q
+        verify(game, times(1)).setState(any());
     }
 
     @Test

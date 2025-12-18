@@ -55,10 +55,13 @@ public class InventoryController extends Controller<Dungeon> {
                 // Use consumable item
                 ((Usable) item).use(getModel().getPlayer());
                 // Remove from inventory after use
-                getModel().getPlayer().getInventory().remove(selectedIndex);
-                // Adjust selection if needed
-                if (selectedIndex >= getModel().getPlayer().getInventory().size() && selectedIndex > 0) {
-                    selectedIndex--;
+                getModel().getPlayer().removeItem(selectedIndex);
+                // Adjust selection if needed - reset to 0 or stay at last valid index
+                int inventorySize = getModel().getPlayer().getInventory().size();
+                if (inventorySize == 0) {
+                    selectedIndex = 0;
+                } else if (selectedIndex >= inventorySize) {
+                    selectedIndex = inventorySize - 1;
                 }
             } else if (item instanceof Equippable) {
                 // Equip item

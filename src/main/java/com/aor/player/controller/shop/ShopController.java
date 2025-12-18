@@ -4,11 +4,8 @@ import com.aor.player.Game;
 import com.aor.player.controller.Controller;
 import com.aor.player.gui.GUI;
 import com.aor.player.model.game.dungeon.Dungeon;
-import com.aor.player.model.game.items.Equippable;
-import com.aor.player.model.game.items.Item;
-import com.aor.player.model.game.items.Usable;
 import com.aor.player.model.game.shop.Shop;
-import com.aor.player.states.GameState;
+import com.aor.player.model.game.shop.ShopOffering;
 import com.aor.player.states.StateFactory;
 
 import java.io.IOException;
@@ -19,7 +16,7 @@ public class ShopController extends Controller<Shop> {
     private int selectedIndex = 0;
 
     public ShopController(Dungeon dungeon, StateFactory stateFactory) {
-        super(new Shop());
+        super(dungeon.getShop()); // Use persistent shop from dungeon
         this.dungeon = dungeon;
         this.stateFactory = stateFactory;
     }
@@ -31,10 +28,10 @@ public class ShopController extends Controller<Shop> {
                 selectedIndex = Math.max(0, selectedIndex - 1);
                 break;
             case DOWN:
-                selectedIndex = Math.min(getModel().getAvailableItems().size() - 1, selectedIndex + 1);
+                selectedIndex = Math.min(getModel().getAvailableOfferings().size() - 1, selectedIndex + 1);
                 break;
             case SELECT:
-                purchaseSelectedItem(game);
+                purchaseSelectedOffering(game);
                 break;
             case QUIT:
                 // Return to game using factory
@@ -49,17 +46,10 @@ public class ShopController extends Controller<Shop> {
         }
     }
 
-    private void purchaseSelectedItem(Game game) {
-        if (selectedIndex >= 0 && selectedIndex < getModel().getAvailableItems().size()) {
-            Item item = getModel().getAvailableItems().get(selectedIndex);
-            boolean success = getModel().purchase(item, dungeon.getPlayer());
-
-            if (success) {
-                // Auto-use potions, auto-equip equipment
-                if (item instanceof Usable) {
-                    ((Usable) item).use(dungeon.getPlayer());
-                }
-            }
+    private void purchaseSelectedOffering(Game game) {
+        if (selectedIndex >= 0 && selectedIndex < getModel().getAvailableOfferings().size()) {
+            ShopOffering offering = getModel().getAvailableOfferings().get(selectedIndex);
+            getModel().purchase(offering, dungeon.getPlayer());
         }
     }
 

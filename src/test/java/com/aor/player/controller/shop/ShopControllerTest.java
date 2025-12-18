@@ -69,7 +69,7 @@ class ShopControllerTest {
     @Test
     void testNavigateDownBoundary() throws IOException {
         Shop shop = controller.getModel();
-        int maxIndex = shop.getAvailableItems().size() - 1;
+        int maxIndex = shop.getAvailableOfferings().size() - 1;
 
         // Navigate to last item
         for (int i = 0; i <= maxIndex + 2; i++) {
@@ -92,15 +92,14 @@ class ShopControllerTest {
     @Test
     void testPurchaseItem() throws IOException {
         int initialGold = player.getGold();
-        int initialInventorySize = player.getInventory().size();
+        int initialHealth = player.getHealth();
 
-        // Purchase first item
+        // Purchase first item (Health Potion)
         controller.step(game, GUI.ACTION.SELECT, 100);
 
-        // Player should have less gold (assuming first item costs > 0)
-        // and more items (potions are auto-used so check health or inventory based on
-        // item)
-        assertTrue(player.getGold() < initialGold || player.getInventory().size() > initialInventorySize);
+        // Player should have less gold and restored health
+        assertTrue(player.getGold() < initialGold);
+        assertTrue(player.getHealth() >= initialHealth); // Health should be same or higher
     }
 
     @Test
@@ -109,13 +108,13 @@ class ShopControllerTest {
         player.addGold(-player.getGold());
         assertEquals(0, player.getGold());
 
-        int initialInventorySize = player.getInventory().size();
+        int initialHealth = player.getMaxHealth();
 
         // Try to purchase
         controller.step(game, GUI.ACTION.SELECT, 100);
 
-        // Should fail, inventory unchanged
-        assertEquals(initialInventorySize, player.getInventory().size());
+        // Should fail, stats unchanged
+        assertEquals(initialHealth, player.getMaxHealth());
         assertEquals(0, player.getGold());
     }
 
