@@ -12,7 +12,7 @@ public class Player extends Element {
     private static final int DEFAULT_ATTACK = 10;
     private static final int DEFAULT_HEALTH = 100;
     private static final int INITIAL_MAX_HEALTH = 100;
-    private static final int DEFAULT_GOLD = 10000;
+    private static final int DEFAULT_GOLD = 100;
     private static final int SPRITE_WIDTH = 7;
     private static final int SPRITE_HEIGHT = 7;
 
