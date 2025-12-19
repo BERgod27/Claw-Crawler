@@ -23,6 +23,9 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     implementation 'com.googlecode.lanterna:lanterna:3.1.1'
 
+    // Pitest JUnit 5 plugin
+    testImplementation 'org.pitest:pitest-junit5-plugin:1.2.0'
+
 }
 
 test {
@@ -42,6 +45,7 @@ pitest {
     targetClasses = ['com.aor.player.*']
     targetTests = ['com.aor.player.*']
     pitestVersion = '1.15.3'
+    junit5PluginVersion = '1.2.0'
     threads = 4
     outputFormats = ['HTML', 'XML']
     timestampedReports = false
