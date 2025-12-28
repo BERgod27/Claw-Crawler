@@ -2,7 +2,7 @@
 
 ## Game Description
 
-Claw Crawler is a dungeon-crawler game based on traditional fantasy tropes. The gameplay sees the player character navigating a series of maze-like environments while climbing and fighting down a dungeon. Throughout the levels the player levels up and gains new abilities that allow them to defeat increasingly powerful enemies.
+Claw Crawler is a dungeon-crawler game based on traditional fantasy tropes. The gameplay sees the player character navigating a series of maze-like environments while fighting his path out. Throughout the rooms the player gains gold that allows them to improve their stats (and their odds) against increasingly difficult enemy encounters.
 
 This project was developed by Bernardo Barbosa (up202403438@edu.fe.up.pt), João Fardilha (up202403383@edu.fe.up.pt) and Pedro Santos (up202405319@edu.fe.up.pt)
 
@@ -11,21 +11,27 @@ This project was developed by Bernardo Barbosa (up202403438@edu.fe.up.pt), João
 - Dungeon environment - A dark background with grey walls;
 - Item shop - Where players may buy items to help them with their stats and journey;
 - Menu - The place where the player may exit the game, start it or read the instructions in order to know what to do;
-- Currency - A coin-based system that allows players to customize their stats and allowing for the playstyle that suits them best.
+- Currency - A coin-based system that allows players to customize their stats and allowing for the playstyle that suits them best;
+- Room differences - Different dungeon rooms with increasing difficulties;
+- Enemy variety - 4 types of enemies, each with different sprites and stats.
 
 ## Planned features
 
-- Different enemies with different attacks;
-- Different dungeon levels with increasing difficulty;
-- Scoreboard;
+None, every planned feature has been implemented!
 
 ## Design
+
+### Instructions
+
+The player controls a hero who sports a blue mohawk and has both a sword and a shield by his side to assist him in his adventures.
+The hero spawns in a dark room with chests, green slimes and a shop. To use the shop, the hero must get gold, in order to get gold he must open the chests and defeat monsters. The shop is the best tool in the hero's arsenal to complete his final goal, to kill the demon king, as it is used to improve his stats.
+In order for the hero to defeat the demon king, he must unlock his room (the one in the north), but for that he must defeat the vampire (western room) and the troll (eastern room).
 
 ### Controls
 
 ![CONTROLS](docs/photos/instructions_pic.png)
 
-### General structure
+### General structures
 #### Current general UML explanation
 
 The game has different states (such as a game state and a menu state), each with its own controller and viewer. The model layer consists of elements such as the dungeon, menu, player, monsters, walls, and positions.
