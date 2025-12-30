@@ -92,9 +92,9 @@ PlayerAction: Describes the actions available to the player (for example, moveme
 - Player, Wall, and Monster are concrete elements and monster references MonsterType, which defines its attributes and behavior.
 - Position holds x and y coordinates for placing elements within the dungeon.
 
-### Design Patterns
+## Design Patterns
 
-#### State Pattern
+### State Pattern
 **Problem:** The game needs to handle different screens (menu, gameplay, combat, shop, inventory, victory) each with different behaviors and rendering.
 
 **Solution:** We implemented the State Pattern using an abstract `State<T>` class. Each game phase (MenuState, GameState, CombatState, ShopState, InventoryState, VictoryState) extends State and provides its own controller and viewer.
@@ -106,7 +106,7 @@ PlayerAction: Describes the actions available to the player (for example, moveme
 
 **Classes involved:** `State`, `GameState`, `MenuState`, `CombatState`, `ShopState`, `InventoryState`, `VictoryState`, `InstructionsState`
 
-#### Factory Pattern
+### Factory Pattern
 **Problem:** Creating complex objects like States and Monsters involves multiple dependencies and initialization logic.
 
 **Solution:** We use Factory classes to centralize object creation:
@@ -121,7 +121,7 @@ PlayerAction: Describes the actions available to the player (for example, moveme
 
 **Classes involved:** `StateFactory`, `MonsterFactory`, `DungeonFactory`
 
-#### Model-View-Controller (MVC)
+### Model-View-Controller (MVC)
 **Problem:** Need separation between game data, rendering, and input handling.
 
 **Solution:** We follow MVC architecture:
@@ -134,7 +134,7 @@ PlayerAction: Describes the actions available to the player (for example, moveme
 - Views can be changed without affecting game logic
 - Controllers can be tested independently
 
-#### Game Loop Pattern
+### Game Loop Pattern
 **Problem:** The game needs continuous updates and rendering at a consistent frame rate.
 
 **Solution:** The `Game` class implements a game loop that:
@@ -150,7 +150,7 @@ PlayerAction: Describes the actions available to the player (for example, moveme
 
 **Classes involved:** `Game`
 
-#### Strategy Pattern (Items)
+### Strategy Pattern (Items)
 **Problem:** Items need different behaviors (equippable vs usable) that can vary independently.
 
 **Solution:** We use interfaces as strategies:
@@ -164,28 +164,28 @@ PlayerAction: Describes the actions available to the player (for example, moveme
 
 **Classes involved:** `Item`, `Usable`, `Equippable`, `HealthPotion`, `Sword`, `Armor`
 
-### Code Smells
+## Code Smells
 
 The following code smells have been identified in the codebase:
 
-#### Long Method
+### Long Method
 - **DungeonController.step()**: The step method handles many different actions in a large switch statement.
 - **RoomGenerator.createWallsFromRooms()**: Multiple nested loops for wall generation.
 
-#### Large Class
+### Large Class
 - **Dungeon**: This class handles room management, player movement, monster tracking, and shop interaction. Could be split into smaller components with single responsibilities.
 
-#### Feature Envy
+### Feature Envy
 - **CombatController**: Accesses Player and Monster internals frequently. Combat logic could be moved to a dedicated Combat model class.
 
-#### Duplicate Code
+### Duplicate Code
 - **Movement methods in DungeonController**: `movePlayerUp()`, `movePlayerDown()`, `movePlayerLeft()`, `movePlayerRight()` share similar structure. Could use a single method with direction parameter.
 
-#### Magic Numbers
+### Magic Numbers
 - **RoomGenerator**: Uses hardcoded values like `numRooms * 10` for max attempts. Should be extracted to named constants.
 - **CombatController**: Combat formulas use magic numbers for damage calculations.
 
-#### Primitive Obsession
+### Primitive Obsession
 - **Position handling**: Many methods take separate x, y parameters instead of Position objects.
 
 ## Coverage Report
