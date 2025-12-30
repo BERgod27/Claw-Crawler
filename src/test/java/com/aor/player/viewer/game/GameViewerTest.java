@@ -4,6 +4,7 @@ import com.aor.player.controller.game.DungeonController;
 import com.aor.player.gui.GUI;
 import com.aor.player.model.game.dungeon.Dungeon;
 import com.aor.player.model.game.elements.Player;
+import com.aor.player.model.Position;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -59,10 +60,48 @@ class GameViewerTest {
     }
 
     @Test
-    void testDrawCallsDrawElements() throws IOException {
+    void testDrawStats() throws IOException {
         gameViewer.draw(mockGUI);
 
-        verify(mockGUI).clear();
-        // drawElements is called internally
+        // Stats drawn at row 36 with gold color
+        verify(mockGUI).drawText(eq(new Position(2, 36)), contains("HP: 100"), eq("#FFD700"));
+    }
+
+    @Test
+    void testDrawQuitConfirmation() throws IOException {
+        when(mockController.isQuitConfirmation()).thenReturn(true);
+
+        gameViewer.draw(mockGUI);
+
+        // Quit prompt at row 37 with red color
+        verify(mockGUI).drawText(eq(new Position(2, 37)), contains("Press Q again to quit"), eq("#FF0000"));
+    }
+
+    @Test
+    void testDrawShopPrompt() throws IOException {
+        when(mockDungeon.isPlayerNearShopKeeper()).thenReturn(true);
+
+        gameViewer.draw(mockGUI);
+
+        verify(mockGUI).drawText(eq(new Position(2, 37)), contains("Press ENTER to open shop"), eq("#00FF00"));
+    }
+
+    @Test
+    void testDrawChestPrompt() throws IOException {
+        when(mockDungeon.getChestNearPlayer()).thenReturn(mock(com.aor.player.model.game.elements.Chest.class));
+
+        gameViewer.draw(mockGUI);
+
+        verify(mockGUI).drawText(eq(new Position(2, 37)), contains("Press ENTER to open chest"), eq("#00FF00"));
+    }
+
+    @Test
+    void testDrawBothPrompts() throws IOException {
+        when(mockDungeon.isPlayerNearShopKeeper()).thenReturn(true);
+        when(mockDungeon.getChestNearPlayer()).thenReturn(mock(com.aor.player.model.game.elements.Chest.class));
+
+        gameViewer.draw(mockGUI);
+
+        verify(mockGUI).drawText(eq(new Position(2, 37)), contains("open shop | open chest"), eq("#00FF00"));
     }
 }

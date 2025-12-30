@@ -30,9 +30,28 @@ public class GameTest {
     void testSetState() {
         State mockState = mock(State.class);
         game.setState(mockState);
-        // Since state is private and has no getter, we can't verify it directly easily
-        // without reflection or a getter.
-        // But we can verify behavior in start() if we could run it safely.
-        // For now, just ensuring no exception is thrown.
+        // We can't verify getter, but we can verify it's used in start() - see
+        // testStart
+    }
+
+    @Test
+    @org.junit.jupiter.api.Timeout(value = 2, unit = java.util.concurrent.TimeUnit.SECONDS)
+    void testStart() throws IOException {
+        State mockState = mock(State.class);
+        game.setState(mockState);
+
+        // Define behavior: when step is called, set state to null to break loop
+        doAnswer(invocation -> {
+            game.setState(null);
+            return null;
+        }).when(mockState).step(any(Game.class), any(LanternaGUI.class), anyLong());
+
+        game.start();
+
+        // Verify loop executed step at least once
+        verify(mockState, atLeastOnce()).step(any(Game.class), any(LanternaGUI.class), anyLong());
+
+        // Verify cleanup
+        verify(gui).close();
     }
 }

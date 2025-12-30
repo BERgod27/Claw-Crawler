@@ -31,7 +31,7 @@ class ChestViewerTest {
 
         chestViewer.draw(mockChest, mockGUI);
 
-        verify(mockGUI, atLeastOnce()).drawChest(any(), any(), anyBoolean());
+        verify(mockGUI).drawChest(eq(new Position(4, 6)), any(), eq(false));
     }
 
     @Test
@@ -40,7 +40,7 @@ class ChestViewerTest {
 
         chestViewer.draw(mockChest, mockGUI);
 
-        verify(mockGUI, atLeastOnce()).drawChest(any(), any(), anyBoolean());
+        verify(mockGUI).drawChest(eq(new Position(4, 6)), any(), eq(true));
     }
 
     @Test
