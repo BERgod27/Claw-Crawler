@@ -164,3 +164,46 @@ PlayerAction: Describes the actions available to the player (for example, moveme
 
 **Classes involved:** `Item`, `Usable`, `Equippable`, `HealthPotion`, `Sword`, `Armor`
 
+### Code Smells
+
+The following code smells have been identified in the codebase:
+
+#### Long Method
+- **DungeonController.step()**: The step method handles many different actions in a large switch statement.
+- **RoomGenerator.createWallsFromRooms()**: Multiple nested loops for wall generation.
+
+#### Large Class
+- **Dungeon**: This class handles room management, player movement, monster tracking, and shop interaction. Could be split into smaller components with single responsibilities.
+
+#### Feature Envy
+- **CombatController**: Accesses Player and Monster internals frequently. Combat logic could be moved to a dedicated Combat model class.
+
+#### Duplicate Code
+- **Movement methods in DungeonController**: `movePlayerUp()`, `movePlayerDown()`, `movePlayerLeft()`, `movePlayerRight()` share similar structure. Could use a single method with direction parameter.
+
+#### Magic Numbers
+- **RoomGenerator**: Uses hardcoded values like `numRooms * 10` for max attempts. Should be extracted to named constants.
+- **CombatController**: Combat formulas use magic numbers for damage calculations.
+
+#### Primitive Obsession
+- **Position handling**: Many methods take separate x, y parameters instead of Position objects.
+
+### Coverage Report
+
+#### Code Coverage (JaCoCo)
+
+![Code Coverage Report](docs/photos/coverage_report.png)
+
+#### Mutation Coverage (Pitest)
+
+![Pitest Coverage Report](docs/photos/pitest_report.png)
+
+**Note on Surviving Mutations:** The remaining ~23% of mutations that survive are primarily in areas that are challenging to test without significant refactoring:
+- **Timing logic in Game.java**: Testing `System.currentTimeMillis()` and `Thread.sleep()` calls would require mocking static methods
+- **Random behavior**: Monster movement uses `Random` which produces non-deterministic results
+- **GUI interactions in LanternaGUI**: Direct terminal I/O is difficult to unit test
+- **Log/print statements**: Calls to `addLogEntry()` in CombatController don't affect functional behavior
+
+
+
+
