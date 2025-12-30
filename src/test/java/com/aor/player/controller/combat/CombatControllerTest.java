@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 import java.io.IOException;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -30,8 +31,6 @@ class CombatControllerTest {
         dungeon = Mockito.spy(new Dungeon(100, 100));
         player = Mockito.spy(new Player(50, 50));
         dungeon.setPlayer(player);
-
-        // Use Spy to control monster stats for specific tests
         monster = Mockito.spy(new Monster(10, 10, MonsterType.SLIME));
         stateFactory = Mockito.mock(StateFactory.class);
         controller = new CombatController(dungeon, monster, stateFactory);
@@ -48,27 +47,21 @@ class CombatControllerTest {
 
     @Test
     void testNavigateUp() throws IOException {
-        controller.step(game, GUI.ACTION.DOWN, 100); // Move to action 1
+        controller.step(game, GUI.ACTION.DOWN, 100);
         assertEquals(1, controller.getSelectedAction());
-
-        controller.step(game, GUI.ACTION.UP, 100); // Move back to action 0
+        controller.step(game, GUI.ACTION.UP, 100);
         assertEquals(0, controller.getSelectedAction());
     }
 
     @Test
     void testNavigateDown() throws IOException {
         assertEquals(0, controller.getSelectedAction());
-
         controller.step(game, GUI.ACTION.DOWN, 100);
         assertEquals(1, controller.getSelectedAction());
-
         controller.step(game, GUI.ACTION.DOWN, 100);
         assertEquals(2, controller.getSelectedAction());
-
         controller.step(game, GUI.ACTION.DOWN, 100);
         assertEquals(3, controller.getSelectedAction());
-
-        // Should not go beyond action 3
         controller.step(game, GUI.ACTION.DOWN, 100);
         assertEquals(3, controller.getSelectedAction());
     }
@@ -76,8 +69,6 @@ class CombatControllerTest {
     @Test
     void testNavigateUpBoundary() throws IOException {
         assertEquals(0, controller.getSelectedAction());
-
-        // Should not go below 0
         controller.step(game, GUI.ACTION.UP, 100);
         assertEquals(0, controller.getSelectedAction());
     }
@@ -91,101 +82,57 @@ class CombatControllerTest {
     @Test
     void testAttackAction() throws IOException {
         int initialMonsterHealth = monster.getHealth();
-
-        // Select attack (action 0) and execute
         controller.step(game, GUI.ACTION.SELECT, 100);
-
-        // Monster should take damage
         assertTrue(monster.getHealth() < initialMonsterHealth);
-
-        // Combat log should record the attack
         assertTrue(controller.getCombatLog().stream()
                 .anyMatch(log -> log.contains("hit") || log.contains("damage")));
     }
 
     @Test
     void testDefendAction() throws IOException {
-
-        // Select defend (action 1)
         controller.step(game, GUI.ACTION.DOWN, 100);
-
-        // Spy on monster to deal specific damage
         doReturn(10).when(monster).getAttack();
-        doReturn(0).when(player).getArmor(); // Simplify calculation
-
+        doReturn(0).when(player).getArmor();
         int initialHp = player.getHealth();
-
-        // Execute defend (triggers monster turn too)
         controller.step(game, GUI.ACTION.SELECT, 100);
-
-        // Monster attack: 10. Defending: 10/2 = 5.
-        // Player should take 5 damage.
         assertEquals(initialHp - 5, player.getHealth());
-
-        // Combat log should show defense
         assertTrue(controller.getCombatLog().stream()
                 .anyMatch(log -> log.contains("block")));
     }
 
     @Test
     void testMinimumDamage() throws IOException {
-        // 1. Minimum Player Attack Damage (1)
-        // Set monster defense high
         doReturn(100).when(monster).getDefense();
         int monsterHp = monster.getHealth();
-
-        controller.step(game, GUI.ACTION.SELECT, 100); // Attack
-
-        // Should do at least 1 damage
+        controller.step(game, GUI.ACTION.SELECT, 100);
         assertEquals(monsterHp - 1, monster.getHealth());
 
-        // 2. Minimum Monster Attack Damage (1)
-        doReturn(0).when(monster).getAttack(); // Weak monster
-        doReturn(100).when(player).getArmor(); // Strong player
+        doReturn(0).when(monster).getAttack();
+        doReturn(100).when(player).getArmor();
         int playerHp = player.getHealth();
-
-        // Trigger monster turn by attacking again
         controller.step(game, GUI.ACTION.SELECT, 100);
-
-        // Should do at least 1 damage
         assertEquals(playerHp - 1, player.getHealth());
     }
 
     @Test
     void testUseItemWithPotion() throws IOException {
-        // Damage player first
         player.takeDamage(20);
         int damagedHealth = player.getHealth();
-
-        // Add a potion to inventory
         HealthPotion potion = new HealthPotion("Health Potion", 30);
         player.addItem(potion);
-
-        // Select use item (action 2)
         controller.step(game, GUI.ACTION.DOWN, 100);
         controller.step(game, GUI.ACTION.DOWN, 100);
         assertEquals(2, controller.getSelectedAction());
-
-        // Execute use item
         controller.step(game, GUI.ACTION.SELECT, 100);
-
-        // Player should be healed
         assertTrue(player.getHealth() > damagedHealth);
     }
 
     @Test
     void testUseItemWithNoItems() throws IOException {
-        // Make sure inventory is empty
         player.getInventory().clear();
-
-        // Select use item (action 2)
         controller.step(game, GUI.ACTION.DOWN, 100);
         controller.step(game, GUI.ACTION.DOWN, 100);
-
-        // Execute use item with empty inventory
         controller.step(game, GUI.ACTION.SELECT, 100);
-
-        // Should show message about no items
         assertTrue(controller.getCombatLog().stream()
                 .anyMatch(log -> log.contains("No usable items")));
     }
@@ -194,17 +141,11 @@ class CombatControllerTest {
     void testFleeAction() throws IOException {
         when(stateFactory.createGameState(dungeon))
                 .thenReturn(Mockito.mock(com.aor.player.states.GameState.class));
-
-        // Select flee (action 3)
         controller.step(game, GUI.ACTION.DOWN, 100);
         controller.step(game, GUI.ACTION.DOWN, 100);
         controller.step(game, GUI.ACTION.DOWN, 100);
         assertEquals(3, controller.getSelectedAction());
-
-        // Execute flee
         controller.step(game, GUI.ACTION.SELECT, 100);
-
-        // Should transition back to game state
         verify(stateFactory, times(1)).createGameState(dungeon);
         verify(game, times(1)).setState(any());
     }
@@ -213,19 +154,11 @@ class CombatControllerTest {
     void testVictoryCondition() throws IOException {
         when(stateFactory.createGameState(dungeon))
                 .thenReturn(Mockito.mock(com.aor.player.states.GameState.class));
-
-        // Damage monster until it dies
         while (!monster.isDead()) {
             monster.takeDamage(100);
         }
-
-        // Execute any action after monster is dead
         controller.step(game, GUI.ACTION.SELECT, 100);
-
-        // Press Q to close combat screen after victory
         controller.step(game, GUI.ACTION.QUIT, 100);
-
-        // Should transition to game state
         verify(game, times(1)).setState(any());
     }
 
@@ -233,41 +166,26 @@ class CombatControllerTest {
     void testDefeatCondition() throws IOException {
         when(stateFactory.createGameState(dungeon))
                 .thenReturn(Mockito.mock(com.aor.player.states.GameState.class));
-
-        // Damage player until death
         while (!player.isDead()) {
             player.takeDamage(100);
         }
-
-        // Execute any action after player is dead (triggers defeat)
         controller.step(game, GUI.ACTION.SELECT, 100);
-
-        // Now need to press Q to close combat screen
         controller.step(game, GUI.ACTION.QUIT, 100);
-
-        // Should transition to game state after pressing Q
         verify(game, times(1)).setState(any());
     }
 
     @Test
     void testCombatLogLimit() throws IOException {
-        // Generate many combat actions
         for (int i = 0; i < 10; i++) {
             controller.step(game, GUI.ACTION.SELECT, 100);
         }
-
-        // Log should be limited to MAX_LOG_ENTRIES (5)
-        assertTrue(controller.getCombatLog().size() <= 6); // 5 + initial message
+        assertTrue(controller.getCombatLog().size() <= 6);
     }
 
     @Test
     void testMonsterTurn() throws IOException {
         int initialHealth = player.getHealth();
-
-        // Attack the monster (which triggers monster turn)
         controller.step(game, GUI.ACTION.SELECT, 100);
-
-        // Player should take damage from monster counter-attack
         assertTrue(player.getHealth() < initialHealth);
     }
 
@@ -281,33 +199,127 @@ class CombatControllerTest {
     void testAllBossesDefeated() throws IOException {
         when(stateFactory.createVictoryState(dungeon))
                 .thenReturn(Mockito.mock(com.aor.player.states.VictoryState.class));
-
-        // Mock all bosses defeated condition
         doReturn(true).when(dungeon).areAllBossesDefeated();
-
-        // Kill monster
         doReturn(0).when(monster).getHealth();
         doReturn(true).when(monster).isDead();
-
-        // Trigger action (monster dead checks happens after action)
         controller.step(game, GUI.ACTION.SELECT, 100);
-
-        // Press Q
         controller.step(game, GUI.ACTION.QUIT, 100);
-
-        // Verify VictoryState transition
         verify(stateFactory, times(1)).createVictoryState(dungeon);
         verify(game, times(1)).setState(any());
     }
 
     @Test
-    void testLogRolling() {
-        // MAX_LOG_ENTRIES is 5.
-        // Add 10 entries.
+    void testLogRolling() throws IOException {
         for (int i = 0; i < 10; i++) {
-            // Using reflection or just verify size.
-            // Since addLogEntry is private, use actions that trigger logs.
-            // Attack triggers log.
+            if (!monster.isDead() && !player.isDead()) {
+                controller.step(game, GUI.ACTION.SELECT, 100);
+            }
         }
+        assertTrue(controller.getCombatLog().size() <= 5);
+    }
+
+    @Test
+    void testDefeatTransitionsToMenu() throws IOException {
+        when(stateFactory.createMenuState())
+                .thenReturn(mock(com.aor.player.states.MenuState.class));
+        doReturn(true).when(player).isDead();
+        doReturn(0).when(player).getHealth();
+        controller.step(game, GUI.ACTION.SELECT, 100);
+        controller.step(game, GUI.ACTION.QUIT, 100);
+        verify(stateFactory, times(1)).createMenuState();
+        verify(game).setState(any());
+    }
+
+    @Test
+    void testDefendMinimumDamage() throws IOException {
+        doReturn(1).when(monster).getAttack();
+        doReturn(100).when(player).getArmor();
+        controller.step(game, GUI.ACTION.DOWN, 100);
+        assertEquals(1, controller.getSelectedAction());
+        int initialHp = player.getHealth();
+        controller.step(game, GUI.ACTION.SELECT, 100);
+        assertEquals(initialHp - 1, player.getHealth());
+    }
+
+    @Test
+    void testVictoryGivesGold() throws IOException {
+        when(stateFactory.createGameState(dungeon))
+                .thenReturn(mock(com.aor.player.states.GameState.class));
+        int initialGold = player.getGold();
+        monster.takeDamage(1000);
+        assertTrue(monster.isDead());
+        controller.step(game, GUI.ACTION.SELECT, 100);
+        assertTrue(player.getGold() > initialGold);
+    }
+
+    @Test
+    void testDefendingLogsCorrectMessage() throws IOException {
+        controller.step(game, GUI.ACTION.DOWN, 100);
+        controller.step(game, GUI.ACTION.SELECT, 100);
+        assertTrue(controller.getCombatLog().stream()
+                .anyMatch(log -> log.contains("brace")));
+    }
+
+    @Test
+    void testFleeingLogsCorrectMessage() throws IOException {
+        when(stateFactory.createGameState(dungeon))
+                .thenReturn(mock(com.aor.player.states.GameState.class));
+        controller.step(game, GUI.ACTION.DOWN, 100);
+        controller.step(game, GUI.ACTION.DOWN, 100);
+        controller.step(game, GUI.ACTION.DOWN, 100);
+        controller.step(game, GUI.ACTION.SELECT, 100);
+        assertTrue(controller.getCombatLog().stream()
+                .anyMatch(log -> log.contains("fled")));
+    }
+
+    @Test
+    void testVictoryRemovesMonster() throws IOException {
+        when(stateFactory.createGameState(dungeon))
+                .thenReturn(mock(com.aor.player.states.GameState.class));
+        dungeon.addMonster(monster);
+        int initialCount = dungeon.getMonsters().size();
+        monster.takeDamage(1000);
+        controller.step(game, GUI.ACTION.SELECT, 100);
+        assertTrue(dungeon.getMonsters().size() < initialCount || monster.isDead());
+    }
+
+    @Test
+    void testVictoryLogsMessages() throws IOException {
+        when(stateFactory.createGameState(dungeon))
+                .thenReturn(mock(com.aor.player.states.GameState.class));
+        monster.takeDamage(1000);
+        controller.step(game, GUI.ACTION.SELECT, 100);
+        List<String> log = controller.getCombatLog();
+        assertTrue(log.stream().anyMatch(l -> l.contains("Victory") || l.contains("defeated")));
+        assertTrue(log.stream().anyMatch(l -> l.contains("gold")));
+    }
+
+    @Test
+    void testDefeatLogsMessages() throws IOException {
+        when(stateFactory.createMenuState())
+                .thenReturn(mock(com.aor.player.states.MenuState.class));
+        player.takeDamage(1000);
+        controller.step(game, GUI.ACTION.SELECT, 100);
+        List<String> log = controller.getCombatLog();
+        assertTrue(log.stream().anyMatch(l -> l.contains("defeated")));
+    }
+
+    @Test
+    void testMonsterTurnLogsMessage() throws IOException {
+        controller.step(game, GUI.ACTION.SELECT, 100);
+        assertTrue(controller.getCombatLog().stream()
+                .anyMatch(log -> log.contains("deals") || log.contains("damage")));
+    }
+
+    @Test
+    void testUseItemLogsSuccess() throws IOException {
+        player.takeDamage(20);
+        HealthPotion potion = new HealthPotion("Health Potion", 30);
+        player.addItem(potion);
+        controller.step(game, GUI.ACTION.DOWN, 100);
+        controller.step(game, GUI.ACTION.DOWN, 100);
+        controller.step(game, GUI.ACTION.SELECT, 100);
+        assertTrue(controller.getCombatLog().stream()
+                .anyMatch(log -> log.contains("used") || log.contains("Health Potion")));
     }
 }

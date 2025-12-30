@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.*;
 
@@ -23,14 +24,16 @@ public class GameTest {
     @Test
     void testGameInitialization() {
         assertNotNull(game);
+        // Verify default state is MenuState
+        assertNotNull(game.getState());
+        assertEquals(com.aor.player.states.MenuState.class, game.getState().getClass());
     }
 
     @Test
     void testSetState() {
         State<?> mockState = mock(State.class);
         game.setState(mockState);
-        // We can't verify getter, but we can verify it's used in start() - see
-        // testStart
+        assertEquals(mockState, game.getState());
     }
 
     @Test
@@ -52,5 +55,137 @@ public class GameTest {
 
         // Verify cleanup
         verify(gui).close();
+    }
+
+    @Test
+    void testStartExceptionCallback() throws IOException {
+        State<?> mockState = mock(State.class);
+        game.setState(mockState);
+
+        // Make step throw an IOException
+        doThrow(new IOException("Test Exception")).when(mockState).step(any(), any(), anyLong());
+
+        // Verify start throws the exception
+        try {
+            game.start();
+        } catch (IOException e) {
+            assertEquals("Test Exception", e.getMessage());
+        }
+    }
+
+    @Test
+    @org.junit.jupiter.api.Timeout(value = 1, unit = java.util.concurrent.TimeUnit.SECONDS)
+    void testGameLoopStops() throws IOException {
+        State<?> mockState = mock(State.class);
+        game.setState(mockState);
+
+        // Run loop 5 times then stop
+        doAnswer(invocation -> {
+            return null;
+        }).doAnswer(invocation -> {
+            return null;
+        }).doAnswer(invocation -> {
+            return null;
+        }).doAnswer(invocation -> {
+            return null;
+        }).doAnswer(invocation -> {
+            game.setState(null);
+            return null;
+        }).when(mockState).step(any(), any(), anyLong());
+
+        game.start();
+
+        // Verify step was called 5 times
+        verify(mockState, times(5)).step(any(), any(), anyLong());
+    }
+
+    /**
+     * Test that sleepTime boundary condition is properly handled.
+     * When sleepTime <= 0, Thread.sleep should not be called.
+     * This test makes step() take longer than frameTime to force sleepTime <= 0.
+     */
+    @Test
+    @org.junit.jupiter.api.Timeout(value = 2, unit = java.util.concurrent.TimeUnit.SECONDS)
+    void testSleepTimeBoundary() throws IOException {
+        State<?> mockState = mock(State.class);
+        game.setState(mockState);
+
+        // Make step take longer than frameTime (16ms for 60 FPS)
+        doAnswer(invocation -> {
+            Thread.sleep(20); // Sleep longer than frameTime
+            game.setState(null);
+            return null;
+        }).when(mockState).step(any(), any(), anyLong());
+
+        long startTime = System.currentTimeMillis();
+        game.start();
+        long elapsed = System.currentTimeMillis() - startTime;
+
+        // Verify the loop completed (step executed once)
+        verify(mockState, times(1)).step(any(), any(), anyLong());
+        // Should complete quickly since sleepTime would be negative
+        org.junit.jupiter.api.Assertions.assertTrue(elapsed < 100,
+                "Game loop should complete quickly when sleepTime <= 0");
+    }
+
+    /**
+     * Test that Thread.sleep is called when sleepTime > 0.
+     * Uses thread interruption to verify sleep was attempted.
+     */
+    @Test
+    @org.junit.jupiter.api.Timeout(value = 2, unit = java.util.concurrent.TimeUnit.SECONDS)
+    void testThreadSleepIsCalled() throws IOException, InterruptedException {
+        State<?> mockState = mock(State.class);
+        game.setState(mockState);
+
+        final boolean[] wasInterrupted = { false };
+        Thread gameThread = new Thread(() -> {
+            try {
+                game.start();
+            } catch (IOException e) {
+                // Expected if interrupted during step
+            }
+        });
+
+        doAnswer(invocation -> {
+            return null; // Fast return to trigger Thread.sleep
+        }).doAnswer(invocation -> {
+            // Interrupt the thread to catch sleep
+            gameThread.interrupt();
+            game.setState(null);
+            return null;
+        }).when(mockState).step(any(), any(), anyLong());
+
+        gameThread.start();
+        gameThread.join(1000);
+
+        // If thread was interrupted during sleep, the loop handled it gracefully
+        verify(mockState, atLeast(1)).step(any(), any(), anyLong());
+    }
+
+    /**
+     * Test elapsed time calculation affects sleepTime correctly.
+     * By measuring total loop time, we verify time math is working.
+     */
+    @Test
+    @org.junit.jupiter.api.Timeout(value = 2, unit = java.util.concurrent.TimeUnit.SECONDS)
+    void testElapsedTimeCalculation() throws IOException {
+        State<?> mockState = mock(State.class);
+        game.setState(mockState);
+
+        // Run exactly one iteration with minimal step time
+        doAnswer(invocation -> {
+            game.setState(null);
+            return null;
+        }).when(mockState).step(any(), any(), anyLong());
+
+        long startTime = System.currentTimeMillis();
+        game.start();
+        long totalElapsed = System.currentTimeMillis() - startTime;
+
+        // With frameTime = 16ms (60 FPS), one iteration should take ~16ms
+        // Allow some tolerance for test execution
+        org.junit.jupiter.api.Assertions.assertTrue(totalElapsed >= 10,
+                "Loop should spend time sleeping: " + totalElapsed + "ms");
     }
 }

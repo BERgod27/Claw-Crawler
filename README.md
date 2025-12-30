@@ -14,10 +14,8 @@ This project was developed by Bernardo Barbosa (up202403438@edu.fe.up.pt), João
 - Currency - A coin-based system that allows players to customize their stats and allowing for the playstyle that suits them best;
 - Room differences - Different dungeon rooms with increasing difficulties;
 - Enemy variety - 4 types of enemies, each with different sprites and stats.
-
-## Planned features
-
-None, every planned feature has been implemented!
+- Inventory - A system that allows players to store items and use them in combat.
+- Final screen - A screen that shows the player's final score and allows them to exit the game.
 
 ## Design
 
@@ -42,17 +40,6 @@ The main goal is to separate responsibilities:
 - Model: represents the game world and its elements.
 
 ![UML Diagram](docs/photos/General_UML.png)
-
-#### Mockup 
-
-- **Mockup 1:** Run test mockup  
-![Mockup 1](docs/photos/mockup1.png)
-
-- **Mockup 2:** Thinking / write-hand mockup 
-![Mockup 2](docs/photos/mockup2.png)
-
-- **Mockup 3:** Thinking / write-hand mockup
-![Mockup 3](docs/photos/mockup3.png)
 
 ##### Game and state layer
 
