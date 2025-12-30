@@ -104,7 +104,6 @@ class CombatControllerTest {
 
     @Test
     void testDefendAction() throws IOException {
-        int initialHealth = player.getHealth();
 
         // Select defend (action 1)
         controller.step(game, GUI.ACTION.DOWN, 100);

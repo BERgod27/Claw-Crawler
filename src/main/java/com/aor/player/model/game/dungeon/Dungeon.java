@@ -149,14 +149,10 @@ public class Dungeon {
      */
     public boolean isMonster(Position position) {
         for (Monster monster : getMonsters()) {
-            int monsterX = monster.getPosition().getX();
-            int monsterY = monster.getPosition().getY();
-            int monsterWidth = monster.getSpriteWidth();
-            int monsterHeight = monster.getSpriteHeight();
-
-            // Check if position is within monster's bounding box
-            if (position.getX() >= monsterX && position.getX() < monsterX + monsterWidth &&
-                    position.getY() >= monsterY && position.getY() < monsterY + monsterHeight) {
+            // Assume the passed position is a single point (1x1)
+            if (com.aor.player.model.utils.CollisionUtils.checkCollision(
+                    position, 1, 1,
+                    monster.getPosition(), monster.getSpriteWidth(), monster.getSpriteHeight())) {
                 return true;
             }
         }
@@ -171,14 +167,10 @@ public class Dungeon {
      */
     public Monster getMonsterAt(Position position) {
         for (Monster monster : getMonsters()) {
-            int monsterX = monster.getPosition().getX();
-            int monsterY = monster.getPosition().getY();
-            int monsterWidth = monster.getSpriteWidth();
-            int monsterHeight = monster.getSpriteHeight();
-
-            // Check if position is within monster's bounding box
-            if (position.getX() >= monsterX && position.getX() < monsterX + monsterWidth &&
-                    position.getY() >= monsterY && position.getY() < monsterY + monsterHeight) {
+            // Assume the passed position is a single point (1x1)
+            if (com.aor.player.model.utils.CollisionUtils.checkCollision(
+                    position, 1, 1,
+                    monster.getPosition(), monster.getSpriteWidth(), monster.getSpriteHeight())) {
                 return monster;
             }
         }
@@ -214,25 +206,11 @@ public class Dungeon {
         }
 
         ShopKeeper shopKeeper = getCurrentRoom().getShopKeeper();
-        Position playerPos = player.getPosition();
-        Position shopPos = shopKeeper.getPosition();
 
-        // Check if player is adjacent/touching shop (within 1 pixel or overlapping)
-        int playerX = playerPos.getX();
-        int playerY = playerPos.getY();
-        int playerWidth = player.getSpriteWidth();
-        int playerHeight = player.getSpriteHeight();
-
-        int shopX = shopPos.getX();
-        int shopY = shopPos.getY();
-        int shopWidth = shopKeeper.getSpriteWidth();
-        int shopHeight = shopKeeper.getSpriteHeight();
-
-        // Expand collision box by 1 pixel to detect adjacency
-        boolean nearX = playerX < shopX + shopWidth + 1 && playerX + playerWidth > shopX - 1;
-        boolean nearY = playerY < shopY + shopHeight + 1 && playerY + playerHeight > shopY - 1;
-
-        return nearX && nearY;
+        return com.aor.player.model.utils.CollisionUtils.checkAdjacency(
+                player.getPosition(), player.getSpriteWidth(), player.getSpriteHeight(),
+                shopKeeper.getPosition(), shopKeeper.getSpriteWidth(), shopKeeper.getSpriteHeight(),
+                1);
     }
 
     /**
@@ -245,9 +223,6 @@ public class Dungeon {
             return null;
         }
 
-        Position playerPos = player.getPosition();
-        int playerX = playerPos.getX();
-        int playerY = playerPos.getY();
         int playerWidth = player.getSpriteWidth();
         int playerHeight = player.getSpriteHeight();
 
@@ -257,18 +232,13 @@ public class Dungeon {
                 continue; // Skip already opened chests
             }
 
-            Position chestPos = chest.getPosition();
-            int chestX = chestPos.getX();
-            int chestY = chestPos.getY();
-            // Assume chest sprite is 7x7 (same as player)
-            int chestWidth = 7;
+            int chestWidth = 7; // As assumed in original code
             int chestHeight = 7;
 
-            // Expand collision box by 1 pixel to detect adjacency
-            boolean nearX = playerX < chestX + chestWidth + 1 && playerX + playerWidth > chestX - 1;
-            boolean nearY = playerY < chestY + chestHeight + 1 && playerY + playerHeight > chestY - 1;
-
-            if (nearX && nearY) {
+            if (com.aor.player.model.utils.CollisionUtils.checkAdjacency(
+                    player.getPosition(), playerWidth, playerHeight,
+                    chest.getPosition(), chestWidth, chestHeight,
+                    1)) {
                 return chest;
             }
         }
@@ -355,14 +325,9 @@ public class Dungeon {
                     if (other == monster)
                         continue; // Skip self
 
-                    int otherX = other.getPosition().getX();
-                    int otherY = other.getPosition().getY();
-                    int otherWidth = other.getSpriteWidth();
-                    int otherHeight = other.getSpriteHeight();
-
-                    // Check if checkPos overlaps with other monster
-                    if (checkPos.getX() >= otherX && checkPos.getX() < otherX + otherWidth &&
-                            checkPos.getY() >= otherY && checkPos.getY() < otherY + otherHeight) {
+                    if (com.aor.player.model.utils.CollisionUtils.checkCollision(
+                            checkPos, 1, 1,
+                            other.getPosition(), other.getSpriteWidth(), other.getSpriteHeight())) {
                         return false;
                     }
                 }

@@ -136,25 +136,13 @@ public class DungeonController extends Controller<Dungeon> {
     }
 
     private Monster checkMonsterAtPosition(Position position) {
-        // Check if player's sprite hitbox overlaps with any monster's sprite hitbox
-        // Using AABB (Axis-Aligned Bounding Box) collision detection
-
-        int playerX = position.getX();
-        int playerY = position.getY();
         int playerWidth = getModel().getPlayer().getSpriteWidth();
         int playerHeight = getModel().getPlayer().getSpriteHeight();
 
         for (Monster monster : getModel().getMonsters()) {
-            int monsterX = monster.getPosition().getX();
-            int monsterY = monster.getPosition().getY();
-            int monsterWidth = monster.getSpriteWidth();
-            int monsterHeight = monster.getSpriteHeight();
-
-            // AABB collision: check if rectangles overlap
-            boolean overlapX = playerX < monsterX + monsterWidth && playerX + playerWidth > monsterX;
-            boolean overlapY = playerY < monsterY + monsterHeight && playerY + playerHeight > monsterY;
-
-            if (overlapX && overlapY) {
+            if (com.aor.player.model.utils.CollisionUtils.checkCollision(
+                    position, playerWidth, playerHeight,
+                    monster.getPosition(), monster.getSpriteWidth(), monster.getSpriteHeight())) {
                 return monster;
             }
         }
@@ -176,55 +164,34 @@ public class DungeonController extends Controller<Dungeon> {
     }
 
     private boolean checkShopAtPosition(Position position) {
-        // Check if player would overlap with shop at the new position
         if (getModel().getCurrentRoom() == null || getModel().getCurrentRoom().getShopKeeper() == null) {
             return false;
         }
 
         var shopKeeper = getModel().getCurrentRoom().getShopKeeper();
-        Position shopPos = shopKeeper.getPosition();
 
-        int playerX = position.getX();
-        int playerY = position.getY();
-        int playerWidth = getModel().getPlayer().getSpriteWidth();
-        int playerHeight = getModel().getPlayer().getSpriteHeight();
-
-        int shopX = shopPos.getX();
-        int shopY = shopPos.getY();
-        int shopWidth = shopKeeper.getSpriteWidth();
-        int shopHeight = shopKeeper.getSpriteHeight();
-
-        // AABB collision
-        boolean overlapX = playerX < shopX + shopWidth && playerX + playerWidth > shopX;
-        boolean overlapY = playerY < shopY + shopHeight && playerY + playerHeight > shopY;
-
-        return overlapX && overlapY;
+        return com.aor.player.model.utils.CollisionUtils.checkCollision(
+                position, getModel().getPlayer().getSpriteWidth(), getModel().getPlayer().getSpriteHeight(),
+                shopKeeper.getPosition(), shopKeeper.getSpriteWidth(), shopKeeper.getSpriteHeight());
     }
 
     private boolean checkChestAtPosition(Position position) {
-        // Check if player would overlap with any chest at the new position
         if (getModel().getCurrentRoom() == null) {
             return false;
         }
 
-        int playerX = position.getX();
-        int playerY = position.getY();
         int playerWidth = getModel().getPlayer().getSpriteWidth();
         int playerHeight = getModel().getPlayer().getSpriteHeight();
 
+        // Chest sprite size constant
+        int chestWidth = 7;
+        int chestHeight = 7;
+
         for (Chest chest : getModel().getCurrentRoom().getChests()) {
-            Position chestPos = chest.getPosition();
-            int chestX = chestPos.getX();
-            int chestY = chestPos.getY();
-            int chestWidth = 7; // Chest sprite size
-            int chestHeight = 7;
-
-            // AABB collision
-            boolean overlapX = playerX < chestX + chestWidth && playerX + playerWidth > chestX;
-            boolean overlapY = playerY < chestY + chestHeight && playerY + playerHeight > chestY;
-
-            if (overlapX && overlapY) {
-                return true; // Found collision with a chest
+            if (com.aor.player.model.utils.CollisionUtils.checkCollision(
+                    position, playerWidth, playerHeight,
+                    chest.getPosition(), chestWidth, chestHeight)) {
+                return true;
             }
         }
         return false;

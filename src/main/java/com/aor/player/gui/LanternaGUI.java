@@ -133,27 +133,21 @@ public class LanternaGUI implements GUI {
 
     @Override
     public void drawSprite(Position position, Sprite sprite) {
-        TextGraphics graphics = screen.newTextGraphics();
-        for (int y = 0; y < sprite.getHeight(); y++) {
-            for (int x = 0; x < sprite.getWidth(); x++) {
-                Color color = sprite.getPixel(x, y);
-                if (color != null && color.getAlpha() > 128) {
-                    String hex = String.format("#%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue());
-                    graphics.setForegroundColor(TextColor.Factory.fromString(hex));
-                    graphics.putString(position.getX() + x, position.getY() + y, "█");
-                }
-            }
-        }
+        drawSpritePixels(position, sprite, false);
     }
 
     @Override
     public void drawChest(Position position, Sprite sprite, boolean opened) {
+        drawSpritePixels(position, sprite, opened);
+    }
+
+    private void drawSpritePixels(Position position, Sprite sprite, boolean darken) {
         TextGraphics graphics = screen.newTextGraphics();
         for (int y = 0; y < sprite.getHeight(); y++) {
             for (int x = 0; x < sprite.getWidth(); x++) {
                 Color color = sprite.getPixel(x, y);
                 if (color != null && color.getAlpha() > 128) {
-                    if (opened) {
+                    if (darken) {
                         color = new Color(color.getRed() / 2, color.getGreen() / 2, color.getBlue() / 2);
                     }
                     String hex = String.format("#%02x%02x%02x", color.getRed(), color.getGreen(), color.getBlue());
