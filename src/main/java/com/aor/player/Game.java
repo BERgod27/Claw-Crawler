@@ -13,10 +13,14 @@ public class Game {
     private final StateFactory stateFactory;
     private State state;
 
-    public Game() throws IOException {
-        this.gui = new LanternaGUI(77, 38);
+    public Game(LanternaGUI gui) {
+        this.gui = gui;
         this.stateFactory = new StateFactory();
         this.state = new MenuState(new Menu(), stateFactory);
+    }
+
+    public Game() throws IOException {
+        this(new LanternaGUI(77, 38));
     }
 
     public static void main(String[] args) throws IOException {

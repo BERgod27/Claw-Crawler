@@ -27,7 +27,7 @@ class DoorViewerTest {
     void testDrawDoor() {
         doorViewer.draw(mockDoor, mockGUI);
 
-        verify(mockGUI).drawSprite(any(), any());
+        verify(mockGUI).drawDoor(any());
     }
 
     @Test
@@ -36,7 +36,7 @@ class DoorViewerTest {
 
         doorViewer.draw(mockDoor, mockGUI);
 
-        verify(mockGUI).drawSprite(any(), any());
+        verify(mockGUI).drawDoor(any());
     }
 
     @Test
@@ -47,6 +47,6 @@ class DoorViewerTest {
         doorViewer.draw(mockDoor, mockGUI);
         doorViewer.draw(door2, mockGUI);
 
-        verify(mockGUI, times(2)).drawSprite(any(), any());
+        verify(mockGUI, times(2)).drawDoor(any());
     }
 }

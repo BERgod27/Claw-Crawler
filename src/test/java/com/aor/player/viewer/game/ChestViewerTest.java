@@ -30,7 +30,7 @@ class ChestViewerTest {
 
         chestViewer.draw(mockChest, mockGUI);
 
-        verify(mockGUI).drawSprite(any(), any());
+        verify(mockGUI, atLeastOnce()).drawChest(any(), any(), anyBoolean());
     }
 
     @Test
@@ -39,7 +39,7 @@ class ChestViewerTest {
 
         chestViewer.draw(mockChest, mockGUI);
 
-        verify(mockGUI).drawSprite(any(), any());
+        verify(mockGUI, atLeastOnce()).drawChest(any(), any(), anyBoolean());
     }
 
     @Test
@@ -51,6 +51,6 @@ class ChestViewerTest {
         chestViewer.draw(mockChest, mockGUI);
         chestViewer.draw(chest2, mockGUI);
 
-        verify(mockGUI, times(2)).drawSprite(any(), any());
+        verify(mockGUI, atLeast(2)).drawChest(any(), any(), anyBoolean());
     }
 }

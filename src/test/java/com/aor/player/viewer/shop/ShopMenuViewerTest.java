@@ -90,7 +90,7 @@ class ShopMenuViewerTest {
 
         shopMenuViewer.drawElements(mockGUI);
 
-        verify(mockGUI).drawText(eq(2), eq(5), eq(">  Health Potion - 50g"), eq("#00FF00"));
+        verify(mockGUI).drawText(eq(2), eq(5), eq("> Health Potion - 50g"), eq("#00FF00"));
         verify(mockGUI).drawText(eq(4), eq(6), eq("Restores 20 HP"), eq("#AAAAAA"));
     }
 
@@ -112,7 +112,7 @@ class ShopMenuViewerTest {
 
         shopMenuViewer.drawElements(mockGUI);
 
-        verify(mockGUI).drawText(eq(2), eq(5), eq(">  Potion - 50g"), eq("#00FF00"));
+        verify(mockGUI).drawText(eq(2), eq(5), eq("> Potion - 50g"), eq("#00FF00"));
         verify(mockGUI).drawText(eq(2), eq(8), eq("  Sword - 100g"), eq("#FFFFFF"));
     }
 
@@ -136,7 +136,7 @@ class ShopMenuViewerTest {
         shopMenuViewer.drawElements(mockGUI);
 
         verify(mockGUI).drawText(eq(2), eq(5), eq("  Item 1 - 50g"), eq("#FFFFFF"));
-        verify(mockGUI).drawText(eq(2), eq(8), eq(">  Item 2 - 75g"), eq("#00FF00"));
+        verify(mockGUI).drawText(eq(2), eq(8), eq("> Item 2 - 75g"), eq("#00FF00"));
     }
 
     @Test
@@ -153,7 +153,7 @@ class ShopMenuViewerTest {
         shopMenuViewer.setSelectedIndex(0);
         shopMenuViewer.drawElements(mockGUI);
 
-        verify(mockGUI).drawText(eq(2), eq(5), eq(">  Expensive Item - 200g"), eq("#FF0000"));
+        verify(mockGUI).drawText(eq(2), eq(5), eq("> Expensive Item - 200g"), eq("#FF0000"));
     }
 
     @Test
@@ -170,7 +170,7 @@ class ShopMenuViewerTest {
         shopMenuViewer.setSelectedIndex(0);
         shopMenuViewer.drawElements(mockGUI);
 
-        verify(mockGUI).drawText(eq(2), eq(5), eq(">  Cheap Item - 30g"), eq("#00FF00"));
+        verify(mockGUI).drawText(eq(2), eq(5), eq("> Cheap Item - 30g"), eq("#00FF00"));
     }
 
     @Test
@@ -237,7 +237,7 @@ class ShopMenuViewerTest {
         shopMenuViewer.drawElements(mockGUI);
 
         verify(mockGUI).drawText(eq(2), eq(5), contains("Potion"), anyString());
-        verify(mockGUI).drawText(anyInt(), anyInt(), contains("Upgrade"), anyString());
+        verify(mockGUI).drawText(anyInt(), anyInt(), contains("Upgrade -"), anyString());
         verify(mockGUI).drawText(eq(4), anyInt(), eq("Purchased: 2 times"), eq("#888888"));
     }
 }

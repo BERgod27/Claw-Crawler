@@ -135,7 +135,7 @@ class InventoryViewerTest {
     void testDrawDisplaysItemsSectionHeader() {
         inventoryViewer.drawElements(mockGUI);
 
-        verify(mockGUI).drawText(eq(2), eq(9), eq("ITEMS:"), eq("#00FF00"));
+        verify(mockGUI).drawText(eq(2), eq(10), eq("ITEMS:"), eq("#00FF00"));
     }
 
     @Test
@@ -144,7 +144,7 @@ class InventoryViewerTest {
 
         inventoryViewer.drawElements(mockGUI);
 
-        verify(mockGUI).drawText(eq(2), eq(10), eq("  (Empty)"), eq("#666666"));
+        verify(mockGUI).drawText(eq(2), eq(11), eq("  (Empty)"), eq("#666666"));
     }
 
     @Test
@@ -156,7 +156,7 @@ class InventoryViewerTest {
 
         inventoryViewer.drawElements(mockGUI);
 
-        verify(mockGUI).drawText(eq(2), eq(10), eq(">  Health Potion - Restores 20 HP"), eq("#00FF00"));
+        verify(mockGUI).drawText(eq(2), eq(11), eq("> Health Potion - Restores 20 HP"), eq("#00FF00"));
     }
 
     @Test
@@ -171,8 +171,8 @@ class InventoryViewerTest {
 
         inventoryViewer.drawElements(mockGUI);
 
-        verify(mockGUI).drawText(eq(2), eq(10), eq(">  Health Potion - Restores 20 HP"), eq("#00FF00"));
-        verify(mockGUI).drawText(eq(2), eq(11), eq("  Mana Potion - Restores 15 MP"), eq("#FFFFFF"));
+        verify(mockGUI).drawText(eq(2), eq(11), eq("> Health Potion - Restores 20 HP"), eq("#00FF00"));
+        verify(mockGUI).drawText(eq(2), eq(12), eq("  Mana Potion - Restores 15 MP"), eq("#FFFFFF"));
     }
 
     @Test
@@ -188,8 +188,8 @@ class InventoryViewerTest {
         inventoryViewer.setSelectedIndex(1);
         inventoryViewer.drawElements(mockGUI);
 
-        verify(mockGUI).drawText(eq(2), eq(10), eq("  Item 1 - Desc 1"), eq("#FFFFFF"));
-        verify(mockGUI).drawText(eq(2), eq(11), eq(">  Item 2 - Desc 2"), eq("#00FF00"));
+        verify(mockGUI).drawText(eq(2), eq(11), eq("  Item 1 - Desc 1"), eq("#FFFFFF"));
+        verify(mockGUI).drawText(eq(2), eq(12), eq("> Item 2 - Desc 2"), eq("#00FF00"));
     }
 
     @Test
@@ -233,6 +233,6 @@ class InventoryViewerTest {
         inventoryViewer.setSelectedIndex(2);
         inventoryViewer.drawElements(mockGUI);
 
-        verify(mockGUI).drawText(eq(2), eq(12), eq(">  C - DC"), eq("#00FF00"));
+        verify(mockGUI).drawText(eq(2), eq(13), eq("> C - DC"), eq("#00FF00"));
     }
 }

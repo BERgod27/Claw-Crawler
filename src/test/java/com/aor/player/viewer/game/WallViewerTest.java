@@ -27,7 +27,7 @@ class WallViewerTest {
     void testDrawWall() {
         wallViewer.draw(mockWall, mockGUI);
 
-        verify(mockGUI).drawSprite(any(), any());
+        verify(mockGUI).drawWall(any());
     }
 
     @Test
@@ -38,6 +38,6 @@ class WallViewerTest {
         wallViewer.draw(mockWall, mockGUI);
         wallViewer.draw(wall2, mockGUI);
 
-        verify(mockGUI, times(2)).drawSprite(any(), any());
+        verify(mockGUI, times(2)).drawWall(any());
     }
 }
