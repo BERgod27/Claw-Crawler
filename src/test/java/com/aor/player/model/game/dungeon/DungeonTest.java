@@ -64,16 +64,6 @@ class DungeonTest {
     void testRemoveBossTracksDefeat() {
         Monster boss = mock(Monster.class);
         when(boss.getType()).thenReturn(MonsterType.BOSS_TROLL_KING);
-        // MonsterType.BOSS_TROLL_KING.isBoss() returns true by definition,
-        // so we don't need to mock it. Mockito cannot mock enums easily anyway.
-        // Note: isBoss is not a method on enum itself easily mocked unless we wrap
-        // logic,
-        // but MonsterType is an enum with logic.
-        // Accessing the real enum is better for 'isBoss' check if it's not final or
-        // complex.
-        // Actually MonsterType is an enum, we can't mock it easily.
-        // But removeMonster calls monster.getType().isBoss().
-        // Let's use real MonsterType for the mock return.
 
         dungeon.removeMonster(boss);
 

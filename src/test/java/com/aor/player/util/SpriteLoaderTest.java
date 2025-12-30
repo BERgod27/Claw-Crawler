@@ -41,7 +41,6 @@ class SpriteLoaderTest {
         Sprite sprite1 = loader.loadSprite(resourcePath);
         Sprite sprite2 = loader.loadSprite(resourcePath);
 
-        // Should return the exact same object reference
         assertSame(sprite1, sprite2);
     }
 
@@ -60,9 +59,7 @@ class SpriteLoaderTest {
 
         Sprite sprite2 = loader.loadSprite(resourcePath);
 
-        // After clearing cache, new object should be created
         assertNotSame(sprite1, sprite2);
-        // But content should be similar (not checking content equality here, just
-        // identity)
+
     }
 }

@@ -6,7 +6,6 @@ import com.aor.player.model.Position;
 import com.aor.player.model.menu.Instructions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 
 import static org.mockito.Mockito.*;
 

@@ -1,13 +1,8 @@
 package com.aor.player.model.game.dungeon;
 
-import com.aor.player.model.game.elements.Chest;
 import com.aor.player.model.game.elements.Door;
-import com.aor.player.model.game.elements.Monster;
-import com.aor.player.model.game.elements.Wall;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
