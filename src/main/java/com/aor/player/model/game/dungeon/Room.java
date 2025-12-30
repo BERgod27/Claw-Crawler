@@ -100,7 +100,7 @@ public class Room {
                 }
 
                 if (!occupied) {
-                    monsters.add(com.aor.player.model.game.elements.MonsterFactory.createSlime(
+                    monsters.add(MonsterFactory.createSlime(
                             slimePos.getX(), slimePos.getY()));
                     spawned++;
                 }

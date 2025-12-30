@@ -23,9 +23,6 @@ public class Victory {
         return slimesKilled;
     }
 
-    /**
-     * Formats time played in mm:ss format
-     */
     public String getFormattedTime() {
         long seconds = timePlayed / 1000;
         long minutes = seconds / 60;

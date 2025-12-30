@@ -15,8 +15,7 @@ import java.util.Random;
 public class DungeonFactory {
     private static final int DUNGEON_WIDTH = 77;
     private static final int DUNGEON_HEIGHT = 35;
-
-    private static final int DOOR_HEIGHT = 10; // Vertical span
+    private static final int DOOR_HEIGHT = 10;
 
     public DungeonFactory() {
     }

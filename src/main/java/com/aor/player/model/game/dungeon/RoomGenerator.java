@@ -1,7 +1,5 @@
 package com.aor.player.model.game.dungeon;
 
-import com.aor.player.model.Position;
-import com.aor.player.model.game.elements.Chest;
 import com.aor.player.model.game.elements.Wall;
 
 import java.util.ArrayList;
@@ -70,7 +68,8 @@ public class RoomGenerator {
         // Carve out rooms
         walls.removeIf(wall -> {
             for (RoomArea room : rooms) {
-                if (room.contains(wall.getPosition())) return true;
+                if (room.contains(wall.getPosition()))
+                    return true;
             }
             return false;
         });
@@ -94,7 +93,8 @@ public class RoomGenerator {
             final int corridorY = y1;
             for (int x = startX; x <= endX; x++) {
                 final int corridorX = x;
-                walls.removeIf(wall -> wall.getPosition().getX() == corridorX && wall.getPosition().getY() == corridorY);
+                walls.removeIf(
+                        wall -> wall.getPosition().getX() == corridorX && wall.getPosition().getY() == corridorY);
             }
 
             // Vertical corridor
@@ -103,7 +103,8 @@ public class RoomGenerator {
             final int corridorX2 = x2;
             for (int y = startY; y <= endY; y++) {
                 final int corridorY2 = y;
-                walls.removeIf(wall -> wall.getPosition().getX() == corridorX2 && wall.getPosition().getY() == corridorY2);
+                walls.removeIf(
+                        wall -> wall.getPosition().getX() == corridorX2 && wall.getPosition().getY() == corridorY2);
             }
         }
     }
