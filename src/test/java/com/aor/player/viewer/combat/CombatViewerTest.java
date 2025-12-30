@@ -115,7 +115,36 @@ class CombatViewerTest {
         combatViewer.setSelectedAction(0);
         combatViewer.draw(mockGUI);
 
-        // Selected action should have different color or prefix
-        verify(mockGUI).clear();
+        // Selected action 'Attack' (index 0) should be Yellow with "> "
+        verify(mockGUI).drawText(any(), eq("> Attack"), eq("#FFFF00"));
+        // Unselected 'Defend' (index 1) should be White with " "
+        verify(mockGUI).drawText(any(), eq("  Defend"), eq("#FFFFFF"));
+
+        // Change selection
+        combatViewer.setSelectedAction(1);
+        combatViewer.draw(mockGUI);
+
+        // Now Defend is selected
+        verify(mockGUI).drawText(any(), eq("> Defend"), eq("#FFFF00"));
+        verify(mockGUI).drawText(any(), eq("  Attack"), eq("#FFFFFF"));
+    }
+
+    @Test
+    void testHealthColors() {
+        // 100/100 = 100% -> Green
+        when(mockPlayer.getHealth()).thenReturn(100);
+        when(mockPlayer.getMaxHealth()).thenReturn(100);
+        combatViewer.draw(mockGUI);
+        verify(mockGUI, atLeastOnce()).drawText(any(), contains("100/100"), eq("#00FF00"));
+
+        // 50/100 = 50% -> Yellow
+        when(mockPlayer.getHealth()).thenReturn(50);
+        combatViewer.draw(mockGUI);
+        verify(mockGUI, atLeastOnce()).drawText(any(), contains("50/100"), eq("#FFFF00"));
+
+        // 10/100 = 10% -> Red
+        when(mockPlayer.getHealth()).thenReturn(10);
+        combatViewer.draw(mockGUI);
+        verify(mockGUI, atLeastOnce()).drawText(any(), contains("10/100"), eq("#FF0000"));
     }
 }

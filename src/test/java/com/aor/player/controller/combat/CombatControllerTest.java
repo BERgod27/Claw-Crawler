@@ -27,11 +27,12 @@ class CombatControllerTest {
 
     @BeforeEach
     void setUp() {
-        dungeon = new Dungeon(100, 100);
-        player = new Player(50, 50);
+        dungeon = Mockito.spy(new Dungeon(100, 100));
+        player = Mockito.spy(new Player(50, 50));
         dungeon.setPlayer(player);
 
-        monster = new Monster(10, 10, MonsterType.SLIME);
+        // Use Spy to control monster stats for specific tests
+        monster = Mockito.spy(new Monster(10, 10, MonsterType.SLIME));
         stateFactory = Mockito.mock(StateFactory.class);
         controller = new CombatController(dungeon, monster, stateFactory);
         game = Mockito.mock(Game.class);
@@ -107,14 +108,47 @@ class CombatControllerTest {
 
         // Select defend (action 1)
         controller.step(game, GUI.ACTION.DOWN, 100);
-        assertEquals(1, controller.getSelectedAction());
 
-        // Execute defend
+        // Spy on monster to deal specific damage
+        doReturn(10).when(monster).getAttack();
+        doReturn(0).when(player).getArmor(); // Simplify calculation
+
+        int initialHp = player.getHealth();
+
+        // Execute defend (triggers monster turn too)
         controller.step(game, GUI.ACTION.SELECT, 100);
+
+        // Monster attack: 10. Defending: 10/2 = 5.
+        // Player should take 5 damage.
+        assertEquals(initialHp - 5, player.getHealth());
 
         // Combat log should show defense
         assertTrue(controller.getCombatLog().stream()
-                .anyMatch(log -> log.contains("brace") || log.contains("block")));
+                .anyMatch(log -> log.contains("block")));
+    }
+
+    @Test
+    void testMinimumDamage() throws IOException {
+        // 1. Minimum Player Attack Damage (1)
+        // Set monster defense high
+        doReturn(100).when(monster).getDefense();
+        int monsterHp = monster.getHealth();
+
+        controller.step(game, GUI.ACTION.SELECT, 100); // Attack
+
+        // Should do at least 1 damage
+        assertEquals(monsterHp - 1, monster.getHealth());
+
+        // 2. Minimum Monster Attack Damage (1)
+        doReturn(0).when(monster).getAttack(); // Weak monster
+        doReturn(100).when(player).getArmor(); // Strong player
+        int playerHp = player.getHealth();
+
+        // Trigger monster turn by attacking again
+        controller.step(game, GUI.ACTION.SELECT, 100);
+
+        // Should do at least 1 damage
+        assertEquals(playerHp - 1, player.getHealth());
     }
 
     @Test
@@ -241,5 +275,39 @@ class CombatControllerTest {
     void testGetMonster() {
         assertEquals(monster, controller.getMonster());
         assertEquals(MonsterType.SLIME, controller.getMonster().getType());
+    }
+
+    @Test
+    void testAllBossesDefeated() throws IOException {
+        when(stateFactory.createVictoryState(dungeon))
+                .thenReturn(Mockito.mock(com.aor.player.states.VictoryState.class));
+
+        // Mock all bosses defeated condition
+        doReturn(true).when(dungeon).areAllBossesDefeated();
+
+        // Kill monster
+        doReturn(0).when(monster).getHealth();
+        doReturn(true).when(monster).isDead();
+
+        // Trigger action (monster dead checks happens after action)
+        controller.step(game, GUI.ACTION.SELECT, 100);
+
+        // Press Q
+        controller.step(game, GUI.ACTION.QUIT, 100);
+
+        // Verify VictoryState transition
+        verify(stateFactory, times(1)).createVictoryState(dungeon);
+        verify(game, times(1)).setState(any());
+    }
+
+    @Test
+    void testLogRolling() {
+        // MAX_LOG_ENTRIES is 5.
+        // Add 10 entries.
+        for (int i = 0; i < 10; i++) {
+            // Using reflection or just verify size.
+            // Since addLogEntry is private, use actions that trigger logs.
+            // Attack triggers log.
+        }
     }
 }

@@ -238,4 +238,49 @@ class DungeonTest {
         // Or if we wait a bit? Thread.sleep(10);
         // assertTrue(dungeon.getTimePlayed() > 0);
     }
+
+    @Test
+    void testCanMonsterMoveTo() {
+        Monster monster = mock(Monster.class);
+        when(monster.getSpriteWidth()).thenReturn(2);
+        when(monster.getSpriteHeight()).thenReturn(2);
+
+        // Mock safe empty room
+        when(mockRoom.isEmpty(any(Position.class))).thenReturn(true);
+        when(mockRoom.getMonsters()).thenReturn(List.of(monster)); // Only self
+
+        // 1. Valid Move
+        assertTrue(dungeon.canMonsterMoveTo(monster, new Position(10, 10)));
+
+        // 2. Out of Bounds
+        assertFalse(dungeon.canMonsterMoveTo(monster, new Position(-1, 5)));
+        assertFalse(dungeon.canMonsterMoveTo(monster, new Position(99, 5))); // Width=100, x=99+2 > 100
+
+        // 3. Wall Collision
+        when(mockRoom.isEmpty(eq(new Position(20, 20)))).thenReturn(false);
+        assertFalse(dungeon.canMonsterMoveTo(monster, new Position(20, 20)));
+
+        // 4. Other Monster Collision
+        Monster other = mock(Monster.class);
+        when(other.getPosition()).thenReturn(new Position(30, 30));
+        when(other.getSpriteWidth()).thenReturn(2);
+        when(other.getSpriteHeight()).thenReturn(2);
+        when(mockRoom.getMonsters()).thenReturn(List.of(monster, other));
+
+        // Attempt to move to overlapping position
+        assertFalse(dungeon.canMonsterMoveTo(monster, new Position(30, 30)));
+        assertFalse(dungeon.canMonsterMoveTo(monster, new Position(29, 29))); // Partial overlap
+    }
+
+    @Test
+    void testAddMonster() {
+        Monster monster = mock(Monster.class);
+        dungeon.addMonster(monster);
+        verify(mockRoom).addMonster(monster);
+
+        // Verify null room handling (safe)
+        dungeon.setCurrentRoomId("invalid");
+        dungeon.addMonster(monster);
+        // Should not throw exception
+    }
 }
