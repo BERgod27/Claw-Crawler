@@ -129,7 +129,6 @@ public class GameTest {
         State<?> mockState = mock(State.class);
         game.setState(mockState);
 
-        final boolean[] wasInterrupted = { false };
         Thread gameThread = new Thread(() -> {
             try {
                 game.start();
