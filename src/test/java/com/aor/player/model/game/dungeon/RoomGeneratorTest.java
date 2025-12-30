@@ -101,11 +101,6 @@ class RoomGeneratorTest {
 
         assertTrue(walls.size() < initialWallCount, "Corridors should remove walls");
 
-        // Check connectivity roughly - between (5,3) and (10,3) walls should be removed
-        // Actually implementation does horizontal then vertical
-        // Center1 (3,3), Center2 (11,3)
-        // Horizontal: min(3,11) to max(3,11) -> 3 to 11 at y=3
-
         // Verify a spot in the expected corridor doesn't have a wall
         for (Wall wall : walls) {
             if (wall.getPosition().getX() == 7 && wall.getPosition().getY() == 3) {

@@ -99,11 +99,6 @@ public class GameTest {
         verify(mockState, times(5)).step(any(), any(), anyLong());
     }
 
-    /**
-     * Test that sleepTime boundary condition is properly handled.
-     * When sleepTime <= 0, Thread.sleep should not be called.
-     * This test makes step() take longer than frameTime to force sleepTime <= 0.
-     */
     @Test
     @org.junit.jupiter.api.Timeout(value = 2, unit = java.util.concurrent.TimeUnit.SECONDS)
     void testSleepTimeBoundary() throws IOException {
@@ -128,10 +123,6 @@ public class GameTest {
                 "Game loop should complete quickly when sleepTime <= 0");
     }
 
-    /**
-     * Test that Thread.sleep is called when sleepTime > 0.
-     * Uses thread interruption to verify sleep was attempted.
-     */
     @Test
     @org.junit.jupiter.api.Timeout(value = 2, unit = java.util.concurrent.TimeUnit.SECONDS)
     void testThreadSleepIsCalled() throws IOException, InterruptedException {
@@ -163,10 +154,6 @@ public class GameTest {
         verify(mockState, atLeast(1)).step(any(), any(), anyLong());
     }
 
-    /**
-     * Test elapsed time calculation affects sleepTime correctly.
-     * By measuring total loop time, we verify time math is working.
-     */
     @Test
     @org.junit.jupiter.api.Timeout(value = 2, unit = java.util.concurrent.TimeUnit.SECONDS)
     void testElapsedTimeCalculation() throws IOException {
@@ -184,7 +171,6 @@ public class GameTest {
         long totalElapsed = System.currentTimeMillis() - startTime;
 
         // With frameTime = 16ms (60 FPS), one iteration should take ~16ms
-        // Allow some tolerance for test execution
         org.junit.jupiter.api.Assertions.assertTrue(totalElapsed >= 10,
                 "Loop should spend time sleeping: " + totalElapsed + "ms");
     }

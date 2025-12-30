@@ -82,20 +82,6 @@ class ShopOfferingTest {
 
     @Test
     void testPurchaseUsableItemAutoUse() {
-        // Create a mock that implements both Item and Usable
-        // Since we can't easily multitype mock with simple Mockito in one line,
-        // we'll assume UsableItem extends Item or implements it.
-        // In this codebase, typically Usable is an interface and items like
-        // HealthPotion implement it + extend Item.
-        // Let's create a concrete class mock or a multitype mock if possible, or just a
-        // mock of a known usable item.
-        // Let's mock a HealthPotion assuming it exists (and we saw it in Shop.java
-        // imports).
-
-        // Actually, let's look at ShopOffering code: "if (item instanceof Usable)"
-        // We can just define a dummy class for testing or assume `HealthPotion` is
-        // available and mockable.
-        // Or we can use `withSettings().extraInterfaces(Usable.class)`.
 
         Item usableItem = mock(Item.class, withSettings().extraInterfaces(Usable.class));
         ShopOffering offering = new ShopOffering(usableItem);

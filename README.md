@@ -91,3 +91,76 @@ PlayerAction: Describes the actions available to the player (for example, moveme
 - Element is the base class for anything located in the dungeon.
 - Player, Wall, and Monster are concrete elements and monster references MonsterType, which defines its attributes and behavior.
 - Position holds x and y coordinates for placing elements within the dungeon.
+
+### Design Patterns
+
+#### State Pattern
+**Problem:** The game needs to handle different screens (menu, gameplay, combat, shop, inventory, victory) each with different behaviors and rendering.
+
+**Solution:** We implemented the State Pattern using an abstract `State<T>` class. Each game phase (MenuState, GameState, CombatState, ShopState, InventoryState, VictoryState) extends State and provides its own controller and viewer.
+
+**Consequences:**
+- Easy to add new game states without modifying existing code
+- Each state encapsulates its own logic cleanly
+- State transitions are explicit and controlled
+
+**Classes involved:** `State`, `GameState`, `MenuState`, `CombatState`, `ShopState`, `InventoryState`, `VictoryState`, `InstructionsState`
+
+#### Factory Pattern
+**Problem:** Creating complex objects like States and Monsters involves multiple dependencies and initialization logic.
+
+**Solution:** We use Factory classes to centralize object creation:
+- `StateFactory` creates all state objects with proper dependencies
+- `MonsterFactory` creates monsters with the correct stats based on type
+- `DungeonFactory` creates complete dungeon configurations
+
+**Consequences:**
+- Decouples object creation from usage
+- Easy to modify creation logic in one place
+- Improves testability through dependency injection
+
+**Classes involved:** `StateFactory`, `MonsterFactory`, `DungeonFactory`
+
+#### Model-View-Controller (MVC)
+**Problem:** Need separation between game data, rendering, and input handling.
+
+**Solution:** We follow MVC architecture:
+- **Model:** `Dungeon`, `Player`, `Monster`, `Menu`, `Shop`, etc.
+- **View:** `GameViewer`, `MenuViewer`, `CombatViewer`, etc.
+- **Controller:** `DungeonController`, `MenuController`, `CombatController`, etc.
+
+**Consequences:**
+- Clear separation of concerns
+- Views can be changed without affecting game logic
+- Controllers can be tested independently
+
+#### Game Loop Pattern
+**Problem:** The game needs continuous updates and rendering at a consistent frame rate.
+
+**Solution:** The `Game` class implements a game loop that:
+1. Processes input
+2. Updates game state via controller
+3. Renders via viewer
+4. Maintains consistent frame timing
+
+**Consequences:**
+- Consistent game speed regardless of hardware
+- Predictable update and render cycle
+- Clean separation of timing from game logic
+
+**Classes involved:** `Game`
+
+#### Strategy Pattern (Items)
+**Problem:** Items need different behaviors (equippable vs usable) that can vary independently.
+
+**Solution:** We use interfaces as strategies:
+- `Usable` interface for consumable items (HealthPotion)
+- `Equippable` interface for equipment (Sword, Armor)
+
+**Consequences:**
+- Items can implement multiple behaviors
+- New item types are easy to add
+- Runtime polymorphism for item usage
+
+**Classes involved:** `Item`, `Usable`, `Equippable`, `HealthPotion`, `Sword`, `Armor`
+

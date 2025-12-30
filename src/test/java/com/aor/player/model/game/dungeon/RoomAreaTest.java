@@ -44,14 +44,7 @@ class RoomAreaTest {
         assertTrue(room1.overlaps(room3));
         assertTrue(room3.overlaps(room1));
 
-        // No overlap - Touching edges (should not overlap based on implementation x <
-        // other.x + width)
-        // If implementation is strict <, then touching is not overlapping.
-        // Let's check implementation: x < other.x + other.width
-        // room1: x=0, w=10. x+w = 10.
-        // room4: x=10, w=5.
-        // room1 overlaps room4? 0 < 10+5 (true) AND 0+10 > 10 (false? 10 > 10 is false)
-        // So touching is NOT overlapping.
+        // No overlap - touching edges
         RoomArea room4 = new RoomArea(10, 0, 5, 5);
         assertFalse(room1.overlaps(room4));
 

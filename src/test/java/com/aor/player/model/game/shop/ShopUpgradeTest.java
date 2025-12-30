@@ -29,11 +29,9 @@ class ShopUpgradeTest {
         Player player = mock(Player.class);
         healthUpgrade.applyUpgrade(player);
 
-        // Price should increase by 1.15x -> 114 (due to floating point truncation)
         assertEquals(114, healthUpgrade.getCurrentPrice());
 
         healthUpgrade.applyUpgrade(player);
-        // Price should increase again: 100 * 1.15^2 = 132.25 -> 132
         assertEquals(132, healthUpgrade.getCurrentPrice());
     }
 
