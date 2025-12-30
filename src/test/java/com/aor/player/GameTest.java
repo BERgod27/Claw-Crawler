@@ -28,7 +28,7 @@ public class GameTest {
 
     @Test
     void testSetState() {
-        State mockState = mock(State.class);
+        State<?> mockState = mock(State.class);
         game.setState(mockState);
         // We can't verify getter, but we can verify it's used in start() - see
         // testStart
@@ -37,7 +37,7 @@ public class GameTest {
     @Test
     @org.junit.jupiter.api.Timeout(value = 2, unit = java.util.concurrent.TimeUnit.SECONDS)
     void testStart() throws IOException {
-        State mockState = mock(State.class);
+        State<?> mockState = mock(State.class);
         game.setState(mockState);
 
         // Define behavior: when step is called, set state to null to break loop
