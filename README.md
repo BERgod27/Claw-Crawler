@@ -188,13 +188,13 @@ The following code smells have been identified in the codebase:
 #### Primitive Obsession
 - **Position handling**: Many methods take separate x, y parameters instead of Position objects.
 
-### Coverage Report
+## Coverage Report
 
-#### Code Coverage (JaCoCo)
+### Code Coverage (JaCoCo)
 
 ![Code Coverage Report](docs/photos/coverage_report.png)
 
-#### Mutation Coverage (Pitest)
+### Mutation Coverage (Pitest)
 
 ![Pitest Coverage Report](docs/photos/pitest_report.png)
 
