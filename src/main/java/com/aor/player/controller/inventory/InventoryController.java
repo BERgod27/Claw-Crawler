@@ -7,7 +7,7 @@ import com.aor.player.model.game.dungeon.Dungeon;
 import com.aor.player.model.game.items.Equippable;
 import com.aor.player.model.game.items.Item;
 import com.aor.player.model.game.items.Usable;
-import com.aor.player.states.GameState;
+
 import com.aor.player.states.StateFactory;
 
 import java.io.IOException;

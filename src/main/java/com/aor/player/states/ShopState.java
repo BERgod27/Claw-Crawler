@@ -11,12 +11,11 @@ public class ShopState extends State<Shop> {
     private final Dungeon dungeon;
     private final ShopController controller;
     private final ShopMenuViewer viewer;
-    private final StateFactory stateFactory;
 
     public ShopState(Shop shop, Dungeon dungeon, StateFactory stateFactory) {
         super(shop);
         this.dungeon = dungeon;
-        this.stateFactory = stateFactory;
+
         this.controller = new ShopController(dungeon, stateFactory);
         this.viewer = new ShopMenuViewer(shop);
     }

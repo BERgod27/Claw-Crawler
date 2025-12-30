@@ -11,7 +11,7 @@ import java.io.IOException;
 public class Game {
     private final LanternaGUI gui;
     private final StateFactory stateFactory;
-    private State state;
+    private State<?> state;
 
     public Game(LanternaGUI gui) {
         this.gui = gui;
@@ -27,7 +27,7 @@ public class Game {
         new Game().start();
     }
 
-    public void setState(State state) {
+    public void setState(State<?> state) {
         this.state = state;
     }
 

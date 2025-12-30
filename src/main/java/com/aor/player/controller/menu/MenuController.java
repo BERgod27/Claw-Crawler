@@ -5,9 +5,7 @@ import com.aor.player.controller.Controller;
 import com.aor.player.gui.GUI;
 import com.aor.player.model.game.dungeon.Dungeon;
 import com.aor.player.model.game.dungeon.DungeonFactory;
-import com.aor.player.model.menu.Instructions;
 import com.aor.player.model.menu.Menu;
-import com.aor.player.states.InstructionsState;
 import com.aor.player.states.StateFactory;
 
 import java.io.IOException;
