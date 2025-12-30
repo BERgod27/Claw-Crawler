@@ -2,6 +2,7 @@ package com.aor.player.viewer.game;
 
 import com.aor.player.gui.GUI;
 import com.aor.player.model.game.elements.Chest;
+import com.aor.player.model.Position;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -18,7 +19,7 @@ class ChestViewerTest {
         mockChest = mock(Chest.class);
         mockGUI = mock(GUI.class);
 
-        when(mockChest.getPosition()).thenReturn(new com.aor.player.model.Position(4, 6));
+        when(mockChest.getPosition()).thenReturn(new Position(4, 6));
         when(mockChest.isOpened()).thenReturn(false);
 
         chestViewer = new ChestViewer();
@@ -45,7 +46,7 @@ class ChestViewerTest {
     @Test
     void testDrawMultipleChests() {
         Chest chest2 = mock(Chest.class);
-        when(chest2.getPosition()).thenReturn(new com.aor.player.model.Position(9, 11));
+        when(chest2.getPosition()).thenReturn(new Position(9, 11));
         when(chest2.isOpened()).thenReturn(true);
 
         chestViewer.draw(mockChest, mockGUI);

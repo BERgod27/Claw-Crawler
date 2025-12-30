@@ -1,6 +1,7 @@
 package com.aor.player.model.game.items;
 
 import org.junit.jupiter.api.Test;
+import com.aor.player.model.game.elements.Player;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -46,7 +47,7 @@ class SwordTest {
     @Test
     void testEquipCallsPlayerEquipSword() {
         Sword sword = new Sword();
-        com.aor.player.model.game.elements.Player player = new com.aor.player.model.game.elements.Player(0, 0);
+        Player player = new Player(0, 0);
 
         sword.equip(player);
 
@@ -56,7 +57,7 @@ class SwordTest {
     @Test
     void testUnequipCallsPlayerUnequipSword() {
         Sword sword = new Sword();
-        com.aor.player.model.game.elements.Player player = new com.aor.player.model.game.elements.Player(0, 0);
+        Player player = new Player(0, 0);
 
         player.equipSword(sword);
         sword.unequip(player);

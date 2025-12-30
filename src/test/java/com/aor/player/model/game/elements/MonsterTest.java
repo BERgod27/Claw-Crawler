@@ -1,6 +1,7 @@
 package com.aor.player.model.game.elements;
 
 import org.junit.jupiter.api.Test;
+import com.aor.player.model.Position;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -259,7 +260,7 @@ class MonsterTest {
     void testMovementMethodsFromElement() {
         Monster monster = new Monster(5, 10, MonsterType.SLIME);
 
-        monster.setPosition(new com.aor.player.model.Position(15, 20));
+        monster.setPosition(new Position(15, 20));
 
         assertEquals(15, monster.getPosition().getX());
         assertEquals(20, monster.getPosition().getY());

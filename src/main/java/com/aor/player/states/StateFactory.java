@@ -3,6 +3,8 @@ package com.aor.player.states;
 import com.aor.player.model.game.dungeon.Dungeon;
 import com.aor.player.model.game.elements.Monster;
 import com.aor.player.model.victory.Victory;
+import com.aor.player.model.menu.Menu;
+import com.aor.player.model.menu.Instructions;
 
 public class StateFactory {
 
@@ -23,15 +25,15 @@ public class StateFactory {
     }
 
     public MenuState createMenuState() {
-        return new MenuState(new com.aor.player.model.menu.Menu(), this);
+        return new MenuState(new Menu(), this);
     }
 
     public InstructionsState createInstructionsState() {
-        return new InstructionsState(new com.aor.player.model.menu.Instructions(), this);
+        return new InstructionsState(new Instructions(), this);
     }
 
     public VictoryState createVictoryState(Dungeon dungeon) {
-        Victory victory = new com.aor.player.model.victory.Victory(
+        Victory victory = new Victory(
                 dungeon.getTimePlayed(),
                 dungeon.getTotalGold(),
                 dungeon.getSlimesKilled());

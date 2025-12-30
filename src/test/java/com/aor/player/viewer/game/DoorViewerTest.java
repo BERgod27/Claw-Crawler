@@ -2,6 +2,7 @@ package com.aor.player.viewer.game;
 
 import com.aor.player.gui.GUI;
 import com.aor.player.model.game.elements.Door;
+import com.aor.player.model.Position;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -18,7 +19,7 @@ class DoorViewerTest {
         mockDoor = mock(Door.class);
         mockGUI = mock(GUI.class);
 
-        when(mockDoor.getPosition()).thenReturn(new com.aor.player.model.Position(3, 7));
+        when(mockDoor.getPosition()).thenReturn(new Position(3, 7));
 
         doorViewer = new DoorViewer();
     }
@@ -32,7 +33,7 @@ class DoorViewerTest {
 
     @Test
     void testDrawDoorAtDifferentPosition() {
-        when(mockDoor.getPosition()).thenReturn(new com.aor.player.model.Position(8, 12));
+        when(mockDoor.getPosition()).thenReturn(new Position(8, 12));
 
         doorViewer.draw(mockDoor, mockGUI);
 
@@ -42,7 +43,7 @@ class DoorViewerTest {
     @Test
     void testDrawMultipleDoors() {
         Door door2 = mock(Door.class);
-        when(door2.getPosition()).thenReturn(new com.aor.player.model.Position(8, 12));
+        when(door2.getPosition()).thenReturn(new Position(8, 12));
 
         doorViewer.draw(mockDoor, mockGUI);
         doorViewer.draw(door2, mockGUI);
