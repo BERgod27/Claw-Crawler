@@ -1,4 +1,4 @@
-# LDTS_T03_G05 - Claw Crawler
+# Claw Crawler
 
 ## Game Description
 
