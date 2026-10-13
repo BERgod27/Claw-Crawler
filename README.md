@@ -4,7 +4,7 @@
 
 Claw Crawler is a dungeon-crawler game based on traditional fantasy tropes. The gameplay sees the player character navigating a series of maze-like environments while fighting his path out. Throughout the rooms the player gains gold that allows them to improve their stats (and their odds) against increasingly difficult enemy encounters.
 
-This project was developed by Bernardo Barbosa (up202403438@edu.fe.up.pt), João Fardilha (up202403383@edu.fe.up.pt) and Pedro Santos (up202405319@edu.fe.up.pt)
+This project was developed by Bernardo Barbosa , João Fardilha  and Pedro Santos
 
 ## Implemented features
 
