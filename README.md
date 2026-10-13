@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="docs/photos/cover.jpg" alt="Claw Crawler cover" width="800">
+</p>
+
 # Claw Crawler
 
 ## Game Description
