@@ -42,7 +42,7 @@ public class LanternaGUI implements GUI {
                 new Font("Monospaced", Font.PLAIN, 12));
         DefaultTerminalFactory terminalFactory = new DefaultTerminalFactory()
                 .setInitialTerminalSize(terminalSize)
-                .setTerminalEmulatorTitle("Dungeon Crawler")
+                .setTerminalEmulatorTitle("Claw Crawler")
                 .setTerminalEmulatorFontConfiguration(fontConfig)
                 .setForceTextTerminal(false);
         return terminalFactory.createTerminal();
