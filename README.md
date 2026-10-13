@@ -17,6 +17,26 @@ This project was developed by Bernardo Barbosa , João Fardilha  and Pedro Santo
 - Inventory - A system that allows players to store items and use them in combat.
 - Final screen - A screen that shows the player's final score and allows them to exit the game.
 
+## Build and Run
+
+### Requirements
+- Java 17 or newer (JDK) <!-- check the version in build.gradle -->
+- A terminal that supports Lanterna (any modern terminal; use a window of at least 80x24)
+
+### Run
+```bash
+git clone https://github.com/BERgod27/Claw-Crawler.git
+cd Claw-Crawler
+./gradlew run        # on Windows: gradlew.bat run
+```
+
+### Tests and reports
+```bash
+./gradlew test            # unit tests
+./gradlew jacocoTestReport   # coverage report
+./gradlew pitest          # mutation testing
+```
+
 ## Design
 
 ### Instructions
