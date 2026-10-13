@@ -35,7 +35,7 @@ This project was developed by Bernardo Barbosa, João Fardilha and Pedro Santos
 ## Build and Run
 
 ### Requirements
-- Java 17 or newer (JDK) <!-- check the version in build.gradle -->
+- Java 17 or newer (JDK) 
 - A terminal that supports Lanterna (any modern terminal; use a window of at least 80x24)
 
 ### Run
