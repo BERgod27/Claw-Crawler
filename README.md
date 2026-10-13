@@ -10,6 +10,17 @@ Claw Crawler is a dungeon-crawler game based on traditional fantasy tropes. The 
 
 This project was developed by Bernardo Barbosa , João Fardilha  and Pedro Santos
 
+## Gameplay
+
+<p align="center">
+  <img src="docs/photos/gameplay.jpg" alt="Exploring the dungeon" width="45%">
+  <img src="docs/photos/combat.jpg" alt="Combat against a slime" width="45%">
+</p>
+<p align="center">
+  <img src="docs/photos/shop.jpg" alt="Item shop" width="45%">
+  <img src="docs/photos/menu.jpg" alt="Main menu" width="45%">
+</p>
+
 ## Implemented features
 
 - Dungeon environment - A dark background with grey walls;
